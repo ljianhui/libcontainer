@@ -4,11 +4,7 @@
 #include "libdef.h"
 
 typedef struct array array;
-typedef struct
-{
-	struct array *a;
-	int cur_index;
-}array_iterator;
+typedef struct array_iterator array_iterator;
 
 /**
  * Create a array
@@ -25,7 +21,7 @@ array* create_array(size_t elem_size, compare_func comparator);
  * @param comparator the function pointer of int (*)(const void*, const void*)
  * @return array pointer, or NULL when error
  */
-array* create_array_capacity(
+array* create_capacity_array(
 	size_t elem_size, int capacity, compare_func comparator);
 
 /**
@@ -34,6 +30,11 @@ array* create_array_capacity(
  * @return array pointer, or NULL when error
  */
 array* clone_array(const array *src);
+
+/**
+ * Clear the array, after the operation, size == 0
+ */
+void clear_array(array *a);
 
 /**
  * Destroy the array
@@ -45,6 +46,12 @@ void destroy_array(array *a);
  * @return 1 if appends successfully, or 0 when failed 
  */
 int append_to_array(array *a, const void *elem);
+
+/**
+ * Removes the last element of array
+ * @return 1 if remove successfully, or 0 when failed
+ */
+int remove_last_from_array(array *a);
 
 /**
  * Adds a depth copy specified element at the specified position in this array
@@ -116,9 +123,14 @@ int size_of_array(const array *a);
 int capacity_of_array(const array *a);
 
 /**
- * init the array_iterator
+ * create the array_iterator, return the pointer of array_iterator
  */
-void init_array_iterator(array *a, array_iterator *it);
+array_iterator* create_array_iterator(array *a);
+
+/**
+ * Destroy the array_iterator
+ */
+void destroy_array_iterator(array_iterator *it);
 
 /**
  * Move iterator to next position
@@ -137,3 +149,4 @@ int has_next_array_iterator(const array_iterator *it);
 void remove_by_array_iterator(array_iterator *it);_
 
 #endif
+
