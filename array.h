@@ -89,7 +89,7 @@ void* get_from_array(const array *a, int index);
  * with a depth copy of specified element
  * @return 1 if set successfully, or 0 when failed
  */
-int set_to_array(const array *a, const void *elem, int index);
+int set_to_array(array *a, const void *elem, int index);
 
 /**
  * Returns the index of the first occurrence of the specified element in this array,
@@ -146,7 +146,7 @@ int has_next_array_iterator(const array_iterator *it);
 /**
  * Removes element which the current iterator point to.
  */
-void remove_by_array_iterator(array_iterator *it);_
+void remove_by_array_iterator(array_iterator *it);
 
 #endif
 

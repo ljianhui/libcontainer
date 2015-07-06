@@ -1,10 +1,11 @@
+#include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
+#include <string.h>
 #include "array.h"
 
 struct array
 {
-	char *elems
+	char *elems;
 	compare_func comparator;
 	size_t elem_size;
 	int size;
@@ -25,10 +26,10 @@ static int reserve(array *a, int capacity)
 	}
 
 	int total_bytes = a->elem_size * capacity;
-	char *new_ptr = malloc(a->elems, total_bytes);
+	char *new_ptr = (char*)malloc(total_bytes);
 	if (new_ptr == NULL)
 	{
-		fprintf(stderr, "out of memory\n")
+		fprintf(stderr, "out of memory\n");
 		return 0;
 	}
 
@@ -44,24 +45,38 @@ static int reserve(array *a, int capacity)
 
 static void left_move(array *a, int start)
 {
-	if (a == NULL || start <= 0 || start >= a->size)
+	/*
+	const char *src = a->elems + start * a->elem_size;
+	char *dst = a->elems + (start - 1) * a->elem_size;
+	memcpy(dst, src, (a->size - start) * a->elem_size);
+	*/
+	const char *src = a->elems + start * a->elem_size;
+	char *dst = a->elems + (start - 1) * a->elem_size;
+	const char *end = a->elems + (a->size - 1) * a->elem_size;
+	while (src <= end)
 	{
-		return;
+		*dst = *src;
+		++dst;
+		++src;
 	}
-	const char *src = a->elems + start * a->elems_size;
-	char *dst = a->elems + (start - 1) * a->elems_size;
-	memcpy(dst, src, (a->size - start) * a->elems_size);
 }
 
 static void right_move(array *a, int start)
 {
-	if (a == NULL || start < 0 || start >= a->size)
+	/*
+	const char *src = a->elems + start * a->elem_size;
+	char *dst = a->elems + (start + 1) * a->elem_size;
+	memcpy(dst, src, (a->size - start) * a->elem_size);
+	*/
+	const char *src = a->elems + (a->size - 1) * a->elem_size;
+	char *dst = a->elems + a->size * a->elem_size;
+	const char *end = a->elems + start * a->elem_size;
+	while (src >= end)
 	{
-		return;
+		*dst = *src;
+		--src;
+		--dst;
 	}
-	const char *src = a->elems + start * a->elems_size;
-	char *dst = a->elems + (start + 1) * a->elems_size;
-	memcpy(dst, src, (a->size - start) * a->elems_size);
 }
 
 array* create_array(size_t elem_size, compare_func comparator)
@@ -157,7 +172,7 @@ int add_to_array(array *a, const void *elem, int index)
 
 	if (a->size == a->capacity)
 	{
-		int new_capacity = a->capacity + a->capacity >> 1 + 1;
+		int new_capacity = 1 + a->capacity + (a->capacity >> 1);
 		if (!reserve(a, new_capacity))
 		{
 			return 0;
@@ -220,7 +235,7 @@ void* get_from_array(const array *a, int index)
 	{
 		return NULL;
 	}
-	return (void*)a->elems + a->elem_size * index;
+	return a->elems + a->elem_size * index;
 }
 
 int set_to_array(array *a, const void *elem, int index)
@@ -241,7 +256,7 @@ int index_of_array(const array *a, const void *elem)
 	}
 
 	int i = 0;
-	char *cur_elem = list->elems;
+	char *cur_elem = a->elems;
 	if (a->comparator != NULL)
 	{
 		for (i = 0; i < a->size; ++i)
