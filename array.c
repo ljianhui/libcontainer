@@ -378,3 +378,4 @@ void remove_by_array_iterator(array_iterator *it)
 		--it->cur_index;
 	}
 }
+
