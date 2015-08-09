@@ -34,7 +34,7 @@ void foreach_in_list(list *lst, visit_func vistor, void *extra_data);
 int size_of_list(const list *lst);
 int is_empty_list(const list *lst);
 
-list_iterator* create_list_iterator(list *lst);
+list_iterator get_list_iterator(list *lst);
 void destroy_list_iterator(list_iterator *lst);
 void* next_list_iterator(list_iterator *it);
 int has_next_list_iterator(const list_iterator *it);

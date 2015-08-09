@@ -25,29 +25,27 @@ int main()
 	{
 		append_to_array(a, &i);
 	}
-	array_iterator *iterator = create_array_iterator(a);
-	if (!has_next_array_iterator(iterator))
+	array_iterator iterator = get_array_iterator(a);
+	if (!has_next_array_iterator(&iterator))
 	{
 		printf("iterator failed\n");
 	}
-	while(has_next_array_iterator(iterator))
+	while(has_next_array_iterator(&iterator))
 	{
-		printf("%d, ", *(int*)next_array_iterator(iterator));
+		printf("%d, ", *(int*)next_array_iterator(&iterator));
 	}
 	printf("\n");
-	destroy_array_iterator(iterator);
 
 	for (i = 0; i < 10; ++i)
 	{
 		add_to_array(a, &(i), i);
 	}
-	iterator = create_array_iterator(a);
-	while(has_next_array_iterator(iterator))
+	iterator = get_array_iterator(a);
+	while(has_next_array_iterator(&iterator))
 	{
-		printf("%d, ", *(int*)next_array_iterator(iterator));
+		printf("%d, ", *(int*)next_array_iterator(&iterator));
 	}
 	printf("\n");
-	destroy_array_iterator(iterator);
 
 	for (i = 9; i >= 0; --i)
 	{
@@ -92,16 +90,15 @@ int main()
 	foreach_in_array(new_a, visitor, NULL);
 	printf("\n");
 
-	iterator = create_array_iterator(a);
-	while (has_next_array_iterator(iterator))
+	iterator = get_array_iterator(a);
+	while (has_next_array_iterator(&iterator))
 	{
-		int *value = (int*)next_array_iterator(iterator);
+		int *value = (int*)next_array_iterator(&iterator);
 		if (*value == 10 || *value == 6)
-			remove_by_array_iterator(iterator);
+			remove_by_array_iterator(&iterator);
 	}
 	foreach_in_array(a, visitor, NULL);
 	printf("\n");
-	destroy_array_iterator(iterator);
 
 	destroy_array(new_a);
 	destroy_array(a);

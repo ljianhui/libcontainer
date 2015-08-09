@@ -12,12 +12,6 @@ struct array
 	int capacity;
 };
 
-struct array_iterator
-{
-	struct array *a;
-	int cur_index;
-};
-
 static int reserve(array *a, int capacity)
 {
 	if (a == NULL || capacity <= a->size)
@@ -329,30 +323,12 @@ int capacity_of_array(const array *a)
 	return a->capacity;
 }
 
-array_iterator* create_array_iterator(array *a)
+array_iterator get_array_iterator(array *a)
 {
-	if (a == NULL)
-	{
-		return NULL;
-	}
-
-	array_iterator *it = (array_iterator*)
-		malloc(sizeof(array_iterator));
-	if (it == NULL)
-	{
-		return NULL;
-	}
-
-	it->a = a;
-	it->cur_index = -1;
-}
-
-void destroy_array_iterator(array_iterator *it)
-{
-	if (it)
-	{
-		free(it);
-	}
+	array_iterator it;
+	it.a = a;
+	it.cur_index = -1;
+	return it;
 }
 
 void* next_array_iterator(array_iterator *it)

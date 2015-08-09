@@ -3,8 +3,14 @@
 
 #include "libdef.h"
 
-typedef struct array array;
+struct array_iterator
+{
+	struct array *a;
+	int cur_index;
+};
 typedef struct array_iterator array_iterator;
+
+typedef struct array array;
 
 /**
  * Create a array
@@ -125,12 +131,7 @@ int capacity_of_array(const array *a);
 /**
  * create the array_iterator, return the pointer of array_iterator
  */
-array_iterator* create_array_iterator(array *a);
-
-/**
- * Destroy the array_iterator
- */
-void destroy_array_iterator(array_iterator *it);
+array_iterator get_array_iterator(array *a);
 
 /**
  * Move iterator to next position
