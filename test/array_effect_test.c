@@ -9,11 +9,11 @@ int main()
 {
 	int i = 0;
 	Dog d;
-	array *a = create_array(sizeof(Dog), NULL);
+	array *a = array_create(sizeof(Dog), NULL);
 	for (i = 0; i < 1 * 1024 * 1024; ++i)
 	{
-		append_to_array(a, &d);
+		array_append(a, &d);
 	}
-	destroy_array(a);
+	array_destroy(a);
 	return 0;
 }

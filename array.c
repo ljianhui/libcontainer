@@ -73,12 +73,12 @@ static void right_move(array *a, int start)
 	}
 }
 
-array* create_array(size_t elem_size, compare_func comparator)
+array* array_create(size_t elem_size, compare_func comparator)
 {
-	return create_capacity_array(elem_size, 0, comparator);
+	return array_create_capacity(elem_size, 0, comparator);
 }
 
-array* create_capacity_array(
+array* array_create_capacity(
 	size_t elem_size, int capacity, compare_func comparator)
 {
 	array *a = (array*)malloc(sizeof(array));
@@ -106,14 +106,14 @@ array* create_capacity_array(
 	return a;
 }
 
-array* clone_array(const array *src)
+array* array_clone(const array *src)
 {
 	if (src == NULL)
 	{
 		return NULL;
 	}
 
-	array *a = create_capacity_array(
+	array *a = array_create_capacity(
 		src->elem_size, src->capacity, src->comparator);
 	if (a == NULL)
 	{
@@ -125,7 +125,7 @@ array* clone_array(const array *src)
 	return a;
 }
 
-void clear_array(array *a)
+void array_clear(array *a)
 {
 	if (a)
 	{
@@ -133,7 +133,7 @@ void clear_array(array *a)
 	}
 }
 
-void destroy_array(array *a)
+void array_destroy(array *a)
 {
 	if (a == NULL)
 	{
@@ -147,17 +147,17 @@ void destroy_array(array *a)
 	free(a);
 }
 
-int append_to_array(array *a, const void *elem)
+int array_append(array *a, const void *elem)
 {
-	return add_to_array(a, elem, a->size);
+	return array_add(a, elem, a->size);
 }
 
-int remove_last_from_array(array *a)
+int array_remove_last(array *a)
 {
-	return remove_from_array(a, a->size-1);
+	return array_remove(a, a->size-1);
 }
 
-int add_to_array(array *a, const void *elem, int index)
+int array_add(array *a, const void *elem, int index)
 {
 	if (a == NULL || index < 0 || index > a->size)
 	{
@@ -179,7 +179,7 @@ int add_to_array(array *a, const void *elem, int index)
 	return 1;
 }
 
-int add_all_to_array(array *dst, const array *src)
+int array_add_all(array *dst, const array *src)
 {
 	if (dst == NULL || src == NULL)
 	{
@@ -202,16 +202,16 @@ int add_all_to_array(array *dst, const array *src)
 	return 1;
 }
 
-int remove_elem_from_array(array *a, const void *elem)
+int array_remove_elem(array *a, const void *elem)
 {
 	if (a == NULL)
 	{
 		return 0;
 	}
-	return remove_from_array(a, index_of_array(a, elem));
+	return array_remove(a, array_index_of(a, elem));
 }
 
-int remove_from_array(array *a, int index)
+int array_remove(array *a, int index)
 {
 	if (a == NULL || index < 0 || index >= a->size)
 	{
@@ -223,7 +223,7 @@ int remove_from_array(array *a, int index)
 	return 1;
 }
 
-void* get_from_array(const array *a, int index)
+void* array_get(const array *a, int index)
 {
 	if (a == NULL || index < 0 || index >= a->size)
 	{
@@ -232,7 +232,7 @@ void* get_from_array(const array *a, int index)
 	return a->elems + a->elem_size * index;
 }
 
-int set_to_array(array *a, const void *elem, int index)
+int array_set(array *a, const void *elem, int index)
 {
 	if (a == NULL || index < 0 || index >= a->size)
 	{
@@ -242,7 +242,7 @@ int set_to_array(array *a, const void *elem, int index)
 	return 1;
 }
 
-int index_of_array(const array *a, const void *elem)
+int array_index_of(const array *a, const void *elem)
 {
 	if (a == NULL || elem == NULL)
 	{
@@ -276,7 +276,7 @@ int index_of_array(const array *a, const void *elem)
 	return -1;
 }
 
-void foreach_in_array(
+void array_foreach(
 	array *a, visit_func vistor, void *extra_data)
 {
 	if (a == NULL || vistor == NULL)
@@ -296,7 +296,7 @@ void foreach_in_array(
 	}
 }
 
-int is_empty_array(const array *a)
+int array_is_empty(const array *a)
 {
 	if (a == NULL)
 	{
@@ -305,7 +305,7 @@ int is_empty_array(const array *a)
 	return !a->size;
 }
 
-int size_of_array(const array *a)
+int array_size(const array *a)
 {
 	if (a == NULL)
 	{
@@ -314,7 +314,7 @@ int size_of_array(const array *a)
 	return a->size;
 }
 
-int capacity_of_array(const array *a)
+int array_capacity(const array *a)
 {
 	if (a == NULL)
 	{
@@ -323,21 +323,40 @@ int capacity_of_array(const array *a)
 	return a->capacity;
 }
 
-array_iterator get_array_iterator(array *a)
+int array_iterator_init(array *a, array_iterator *it)
 {
-	array_iterator it;
-	it.a = a;
-	it.cur_index = -1;
-	return it;
+	if (a == NULL || it == NULL)
+	{
+		return 0;
+	}
+
+	it->a = a;
+	it->cur_index = -1;
+	return 1;
 }
 
-void* next_array_iterator(array_iterator *it)
+void* array_iterator_next(array_iterator *it)
 {
+	if (it == NULL)
+	{
+		return NULL;
+	}
+
 	++it->cur_index;
-	return get_from_array(it->a, it->cur_index);
+	return array_get(it->a, it->cur_index);
 }
 
-int has_next_array_iterator(const array_iterator *it)
+void* array_iterator_data(array_iterator *it)
+{
+	if (it == NULL)
+	{
+		return NULL;
+	}
+
+	return array_get(it->a, it->cur_index);
+}
+
+int array_iterator_has_next(const array_iterator *it)
 {
 	if (it == NULL)
 	{
@@ -346,12 +365,11 @@ int has_next_array_iterator(const array_iterator *it)
 	return it->cur_index < it->a->size - 1;
 }
 
-void remove_by_array_iterator(array_iterator *it)
+void array_iterator_remove(array_iterator *it)
 {
 	if (it != NULL && it->cur_index != -1)
 	{
-		remove_from_array(it->a, it->cur_index);
+		array_remove(it->a, it->cur_index);
 		--it->cur_index;
 	}
 }
-

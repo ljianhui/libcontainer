@@ -14,93 +14,93 @@ int visitor(void *element, void *extra)
 
 int main()
 {
-	array *a = create_array(sizeof(int), comparator);
+	array *a = array_create(sizeof(int), comparator);
 	if (a == NULL)
 	{
-		printf("create_array failed\n");
+		fprintf(stderr, "create_array failed\n");
 	}
 
 	int i = 0;
 	for (i = 0; i < 10; ++i)
 	{
-		append_to_array(a, &i);
+		array_append(a, &i);
 	}
-	array_iterator iterator = get_array_iterator(a);
-	if (!has_next_array_iterator(&iterator))
+	array_iterator iterator;
+	array_iterator_init(a, &iterator);
+	if (!array_iterator_has_next(&iterator))
 	{
-		printf("iterator failed\n");
+		fprintf(stderr, "iterator failed\n");
 	}
-	while(has_next_array_iterator(&iterator))
+	while(array_iterator_has_next(&iterator))
 	{
-		printf("%d, ", *(int*)next_array_iterator(&iterator));
+		printf("%d, ", *(int*)array_iterator_next(&iterator));
 	}
 	printf("\n");
 
 	for (i = 0; i < 10; ++i)
 	{
-		add_to_array(a, &(i), i);
+		array_add(a, &(i), i);
 	}
-	iterator = get_array_iterator(a);
-	while(has_next_array_iterator(&iterator))
+	array_iterator_init(a, &iterator);
+	while(array_iterator_has_next(&iterator))
 	{
-		printf("%d, ", *(int*)next_array_iterator(&iterator));
+		printf("%d, ", *(int*)array_iterator_next(&iterator));
 	}
 	printf("\n");
 
 	for (i = 9; i >= 0; --i)
 	{
-		remove_from_array(a, i);
+		array_remove(a, i);
 	}
 	int value = 9;
-	remove_elem_from_array(a, &value);
+	array_remove_elem(a, &value);
 	value = 0;
-	remove_elem_from_array(a, &value);
-	remove_elem_from_array(a, &value);
-	foreach_in_array(a, visitor, NULL);
+	array_remove_elem(a, &value);
+	array_remove_elem(a, &value);
+	array_foreach(a, visitor, NULL);
 	printf("\n");
 
-	printf("size: %d, capacity: %d\n",
-	        size_of_array(a), capacity_of_array(a));
+	printf("size: %d, capacity: %d\n", array_size(a), array_capacity(a));
 
 	value = 10;
-	set_to_array(a, &value, 0);
+	array_set(a, &value, 0);
 	value = 11;
-	set_to_array(a, &value, 1);
-	printf("%d, %d\n", *(int*)get_from_array(a, 0), *(int*)get_from_array(a, 1));
+	array_set(a, &value, 1);
+	printf("%d, %d\n", *(int*)array_get(a, 0), *(int*)array_get(a, 1));
 	
-	printf("index of %d: %d\n", value, index_of_array(a, &value));
+	printf("index of %d: %d\n", value, array_index_of(a, &value));
 
-	array *new_a = clone_array(a);
-	printf("capacity: %d\n", capacity_of_array(new_a));
-	foreach_in_array(new_a, visitor, NULL);
+	array *new_a = array_clone(a);
+	printf("capacity: %d\n", array_capacity(new_a));
+	array_foreach(new_a, visitor, NULL);
 	printf("\n");
 
-	add_all_to_array(new_a, a);
-	foreach_in_array(new_a, visitor, NULL);
+	array_add_all(new_a, a);
+	array_foreach(new_a, visitor, NULL);
 	printf("\n");
 
-	printf("isEmpty: %d\n", is_empty_array(new_a));
-	clear_array(new_a);
-	printf("isEmpty: %d\n", is_empty_array(new_a));
+	printf("isEmpty: %d\n", array_is_empty(new_a));
+	array_clear(new_a);
+	printf("isEmpty: %d\n", array_is_empty(new_a));
 
 	value = 12;
-	append_to_array(new_a, &value);
+	array_append(new_a, &value);
 	value = 13;
-	append_to_array(new_a, &value);
-	foreach_in_array(new_a, visitor, NULL);
+	array_append(new_a, &value);
+	array_foreach(new_a, visitor, NULL);
 	printf("\n");
 
-	iterator = get_array_iterator(a);
-	while (has_next_array_iterator(&iterator))
+	array_iterator_init(a, &iterator);
+	while (array_iterator_has_next(&iterator))
 	{
-		int *value = (int*)next_array_iterator(&iterator);
+		int *value = (int*)array_iterator_next(&iterator);
 		if (*value == 10 || *value == 6)
-			remove_by_array_iterator(&iterator);
+			array_iterator_remove(&iterator);
 	}
-	foreach_in_array(a, visitor, NULL);
+	array_foreach(a, visitor, NULL);
 	printf("\n");
 
-	destroy_array(new_a);
-	destroy_array(a);
+	array_destroy(new_a);
+	array_destroy(a);
 	return 0;
 }
