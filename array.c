@@ -325,7 +325,7 @@ int array_capacity(const array *a)
 
 int array_iterator_init(array *a, array_iterator *it)
 {
-	if (a == NULL || it == NULL)
+	if (it == NULL)
 	{
 		return 0;
 	}
@@ -337,7 +337,7 @@ int array_iterator_init(array *a, array_iterator *it)
 
 void* array_iterator_next(array_iterator *it)
 {
-	if (it == NULL)
+	if (!array_iterator_has_next(it))
 	{
 		return NULL;
 	}
@@ -346,9 +346,9 @@ void* array_iterator_next(array_iterator *it)
 	return array_get(it->a, it->cur_index);
 }
 
-void* array_iterator_data(array_iterator *it)
+void* array_iterator_elem(array_iterator *it)
 {
-	if (it == NULL)
+	if (it == NULL || it->a == NULL)
 	{
 		return NULL;
 	}
@@ -358,7 +358,7 @@ void* array_iterator_data(array_iterator *it)
 
 int array_iterator_has_next(const array_iterator *it)
 {
-	if (it == NULL)
+	if (it == NULL || it->a == NULL)
 	{
 		return 0;
 	}
@@ -367,7 +367,7 @@ int array_iterator_has_next(const array_iterator *it)
 
 void array_iterator_remove(array_iterator *it)
 {
-	if (it != NULL && it->cur_index != -1)
+	if (it != NULL && it->a != NULL && it->cur_index >= 0)
 	{
 		array_remove(it->a, it->cur_index);
 		--it->cur_index;

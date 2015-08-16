@@ -142,7 +142,7 @@ void* array_iterator_next(array_iterator *it);
 /**
  * Get the element data which the current iterator point to
  */
-void* array_iterator_data(array_iterator *it);
+void* array_iterator_elem(array_iterator *it);
 
 /**
  * Returns 1 if the iteration has next element, otherwise return 0

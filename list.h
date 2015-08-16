@@ -3,43 +3,50 @@
 
 #include "libdef.h"
 
-typedef struct list list;
+struct list_iterator
+{
+	struct list *lst;
+	struct node *cur_node;
+};
 typedef struct list_iterator list_iterator;
 
-list* create_list(size_t elem_size, compare_func comparator);
-list* clone_list(const list *src);
+typedef struct list list;
 
-void clear_list(list *lst);
-void destroy_list(list *lst);
+list* list_create(size_t elem_size, compare_func comparator);
+list* list_clone(const list *src);
 
-int add_first_to_list(list *lst, const void *elem);
-int append_to_list(list *lst, const void *elem);
-int add_to_list(list *lst, const void *elem, int index);
-int add_all_to_list(list *dst, const list *src);
+void list_clear(list *lst);
+void list_destroy(list *lst);
 
-int remove_first_from_list(list *lst);
-int remove_last_from_list(list *lst);
-int remove_from_list(list *lst, int index);
+int list_add_first(list *lst, const void *elem);
+int list_append(list *lst, const void *elem);
+int list_add(list *lst, const void *elem, int index);
+int list_add_all(list *dst, const list *src);
 
-void* get_first_of_list(const list *lst);
-void* get_last_of_list(const list *lst);
-void* get_from_list(const list *lst, int index);
+int list_remove_first(list *lst);
+int list_remove_last(list *lst);
+int list_remove_elem(list *lst, const void *elem);
+int list_remove(list *lst, int index);
 
-void* set_first_of_list(list *lst, const void *elem);
-void* set_last_of_list(list *lst, const void *elem);
-void* set_to_list(list *lst, const void *elem, int index);
+void* list_get_first(const list *lst);
+void* list_get_last(const list *lst);
+void* list_get(const list *lst, int index);
 
-void foreach_in_list(list *lst, visit_func vistor, void *extra_data);
+void list_set_first(list *lst, const void *elem);
+void list_set_last(list *lst, const void *elem);
+void list_set(list *lst, const void *elem, int index);
 
-int size_of_list(const list *lst);
-int is_empty_list(const list *lst);
+void list_foreach(list *lst, visit_func vistor, void *extra_data);
+int list_find(const list *lst, const void *elem, list_iterator *it);
 
-list_iterator get_list_iterator(list *lst);
-void destroy_list_iterator(list_iterator *lst);
-void* next_list_iterator(list_iterator *it);
-int has_next_list_iterator(const list_iterator *it);
-void remove_by_list_iterator(list_iterator *it);
-void add_by_list_iterator(list_iterator *it);
+int list_size(const list *lst);
+int list_is_empty(const list *lst);
+
+int list_iterator_init(list *lst, list_iterator *it);
+void* list_iterator_next(list_iterator *it);
+void* list_iterator_elem(const list_iterator *it);
+int list_iterator_has_next(const list_iterator *it);
+void list_iterator_remove(list_iterator *it);
+void list_iterator_add(list_iterator *it, const void *elem);
 
 #endif
-
