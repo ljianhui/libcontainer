@@ -286,16 +286,12 @@ int list_remove_elem(list *lst, const void *elem)
 	{
 		if (lst->comparator(nd->elem, elem) == 0)
 		{
-			next = nd->next;
 			unlink_from_list(lst, nd);
-			nd = next;
+			return 1;
 		}
-		else
-		{
-			nd = nd->next;
-		}
+		nd = nd->next;
 	}
-	return 1;
+	return 0;
 }
 
 int list_remove(list *lst, int index)

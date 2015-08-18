@@ -72,14 +72,14 @@ int list_remove_first(list *lst);
 int list_remove_last(list *lst);
 
 /**
- * Removes the all occurrence of the specified element from this list
- * @return 1 if adds successfully, or 0 when failed
+ * Removes the first occurrence of the specified element from this list
+ * @return 1 if removes successfully, or 0 when failed
  */
 int list_remove_elem(list *lst, const void *elem);
 
 /**
  * Removes the element at the specified position in this list
- * @return 1 if adds successfully, or 0 when failed
+ * @return 1 if removes successfully, or 0 when failed
  */
 int list_remove(list *lst, int index);
 

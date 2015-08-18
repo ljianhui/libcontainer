@@ -25,7 +25,7 @@ int main()
 	{
 		list_add_first(lst, &i);
 	}
-	list_foreach(lst, visitor, NULL);
+	list_foreach(lst, visitor, NULL); // 1
 	printf("\n");
 
 	list_clear(lst);
@@ -33,7 +33,7 @@ int main()
 	{
 		list_append(lst, &i);
 	}
-	list_foreach(lst, visitor, NULL);
+	list_foreach(lst, visitor, NULL);	// 2
 	printf("size: %d\n", list_size(lst));
 
 	i = 100;
@@ -47,14 +47,14 @@ int main()
 	{
 		printf("%d, ", *(int*)list_iterator_next(&it));
 	}
-	printf("size: %d\n", list_size(lst));
+	printf("size: %d\n", list_size(lst)); // 3
 
 	list *clone = list_clone(lst);
-	list_foreach(clone, visitor, NULL);
+	list_foreach(clone, visitor, NULL);	// 4
 	printf("size: %d\n", list_size(clone));
 
 	list_add_all(lst, clone);
-	list_foreach(lst, visitor, NULL);
+	list_foreach(lst, visitor, NULL); // 5
 	printf("size: %d\n", list_size(lst));
 
 	i = 8;
@@ -62,21 +62,21 @@ int main()
 	list_remove_last(lst);
 	list_remove_elem(lst, &i);
 	list_remove(lst, 2);
-	list_foreach(lst, visitor, NULL);
+	list_foreach(lst, visitor, NULL);	// 6
 	printf("size: %d\n", list_size(lst));
 
 	printf("first: %d, last: %d, index 10: %d\n",
-		*(int*)list_get_first(lst), *(int*)list_get_last(lst), *(int*)list_get(lst, 10));
+		*(int*)list_get_first(lst), *(int*)list_get_last(lst), *(int*)list_get(lst, 10));	// 7
 
 	i = 102;
 	list_set_first(lst, &i);
 	list_set_last(lst, &i);
 	list_set(lst, &i, 20);
-	list_foreach(lst, visitor, NULL);
+	list_foreach(lst, visitor, NULL); // 8
 	printf("size: %d\n", list_size(lst));
 
 	i = 9;
-	if (list_find(lst, &i, &it))
+	if (list_find(lst, &i, &it)) // 9
 	{
 		printf("find success: %d\n", *(int*)list_iterator_elem(&it));
 	}
@@ -85,7 +85,7 @@ int main()
 		printf("find failed\n");
 	}
 	i = 111;
-	if (list_find(lst, &i, &it))
+	if (list_find(lst, &i, &it)) // 10
 	{
 		printf("find success: %d\n", *(int*)list_iterator_elem(&it));
 	}
@@ -94,7 +94,7 @@ int main()
 		printf("find failed\n");
 	}
 
-	printf("%s\n", list_is_empty(lst)? "lst is empty" : "lst is not empty");
+	printf("%s\n", list_is_empty(lst)? "lst is empty" : "lst is not empty");	// 11
 
 	list_iterator_init(lst, &it);
 	int elem = 0;
