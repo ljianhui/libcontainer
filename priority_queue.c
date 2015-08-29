@@ -25,7 +25,7 @@ static int reserve(priority_queue *pri_queue)
 	elem_type *elems = (elem_type*)malloc(sizeof(elem_type) * (new_capacity+1));
 	if (elems == NULL)
 	{
-	    return 0;
+		return 0;
 	}
 
 	memset(elems, 0, sizeof(elem_type) * (new_capacity+1));
@@ -150,7 +150,7 @@ int priority_queue_push(priority_queue *pri_queue, const void *elem)
 
 	for (; i != 1 && pri_queue->comparator(elem, pri_queue->elems[i/2]) < 0; i /= 2)
 	{
-	    pri_queue->elems[i] = pri_queue->elems[i/2];
+		pri_queue->elems[i] = pri_queue->elems[i/2];
 	}
 	pri_queue->elems[i] = new_elem;
 	++pri_queue->size;
@@ -171,21 +171,21 @@ void priority_queue_pop(priority_queue *pri_queue)
 
 	for (i = 1; i * 2 <= pri_queue->size; i = child)
 	{
-	    child = i * 2;
-	    if (child < pri_queue->size &&
-	        pri_queue->comparator(pri_queue->elems[child+1], pri_queue->elems[child]) < 0)
-	    {
-	        ++child;
-	    }
+		child = i * 2;
+		if (child < pri_queue->size &&
+		    pri_queue->comparator(pri_queue->elems[child+1], pri_queue->elems[child]) < 0)
+		{
+			++child;
+		}
 
-	    if (pri_queue->comparator(pri_queue->elems[child], last) < 0)
-	    {
-	        pri_queue->elems[i] = pri_queue->elems[child];
-	    }
-	    else
-	    {
-	        break;
-	    }
+		if (pri_queue->comparator(pri_queue->elems[child], last) < 0)
+		{
+			pri_queue->elems[i] = pri_queue->elems[child];
+		}
+		else
+		{
+			break;
+		}
 	}
 	pri_queue->elems[i] = last;
 	pri_queue->elems[pri_queue->size + 1] = min;
