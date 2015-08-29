@@ -11,30 +11,30 @@ typedef void* elem_type;
 
 struct priority_queue
 {
-    elem_type *elems;
-    int elem_size;
-    int size;
-    int capacity;
-    compare_func comparator;
+	elem_type *elems;
+	int elem_size;
+	int size;
+	int capacity;
+	compare_func comparator;
 };
 
 static int reserve(priority_queue *pri_queue)
 {
-    int new_capacity = pri_queue->capacity + (pri_queue->capacity >> 1);
+	int new_capacity = pri_queue->capacity + (pri_queue->capacity >> 1);
 
-    elem_type *elems = (elem_type*)malloc(sizeof(elem_type) * (new_capacity+1));
-    if (elems == NULL)
-    {
-        return 0;
-    }
+	elem_type *elems = (elem_type*)malloc(sizeof(elem_type) * (new_capacity+1));
+	if (elems == NULL)
+	{
+	    return 0;
+	}
 
-    memset(elems, 0, sizeof(elem_type) * (new_capacity+1));
-    memcpy(elems, pri_queue->elems, sizeof(elem_type) * (pri_queue->capacity+1));
+	memset(elems, 0, sizeof(elem_type) * (new_capacity+1));
+	memcpy(elems, pri_queue->elems, sizeof(elem_type) * (pri_queue->capacity+1));
 
-    free(pri_queue->elems);
-    pri_queue->elems = elems;
-    pri_queue->capacity = new_capacity;
-    return 1;
+	free(pri_queue->elems);
+	pri_queue->elems = elems;
+	pri_queue->capacity = new_capacity;
+	return 1;
 }
 
 static priority_queue* create_priority_queue(size_t elem_size, compare_func comparator, int capacity)
@@ -149,12 +149,12 @@ int priority_queue_push(priority_queue *pri_queue, const void *elem)
 	memcpy(new_elem, elem, pri_queue->elem_size);
 
 	for (; i != 1 && pri_queue->comparator(elem, pri_queue->elems[i/2]) < 0; i /= 2)
-    {
-        pri_queue->elems[i] = pri_queue->elems[i/2];
-    }
-    pri_queue->elems[i] = new_elem;
-    ++pri_queue->size;
-    return 1;
+	{
+	    pri_queue->elems[i] = pri_queue->elems[i/2];
+	}
+	pri_queue->elems[i] = new_elem;
+	++pri_queue->size;
+	return 1;
 }
 
 void priority_queue_pop(priority_queue *pri_queue)
@@ -165,30 +165,30 @@ void priority_queue_pop(priority_queue *pri_queue)
 	}
 
 	int i = 0;
-    int child = 0;
-    elem_type min = pri_queue->elems[1];
-    elem_type last = pri_queue->elems[pri_queue->size--];
+	int child = 0;
+	elem_type min = pri_queue->elems[1];
+	elem_type last = pri_queue->elems[pri_queue->size--];
 
-    for (i = 1; i * 2 <= pri_queue->size; i = child)
-    {
-        child = i * 2;
-        if (child < pri_queue->size &&
-            pri_queue->comparator(pri_queue->elems[child+1], pri_queue->elems[child]) < 0)
-        {
-            ++child;
-        }
+	for (i = 1; i * 2 <= pri_queue->size; i = child)
+	{
+	    child = i * 2;
+	    if (child < pri_queue->size &&
+	        pri_queue->comparator(pri_queue->elems[child+1], pri_queue->elems[child]) < 0)
+	    {
+	        ++child;
+	    }
 
-        if (pri_queue->comparator(pri_queue->elems[child], last) < 0)
-        {
-            pri_queue->elems[i] = pri_queue->elems[child];
-        }
-        else
-        {
-            break;
-        }
-    }
-    pri_queue->elems[i] = last;
-    pri_queue->elems[pri_queue->size + 1] = min;
+	    if (pri_queue->comparator(pri_queue->elems[child], last) < 0)
+	    {
+	        pri_queue->elems[i] = pri_queue->elems[child];
+	    }
+	    else
+	    {
+	        break;
+	    }
+	}
+	pri_queue->elems[i] = last;
+	pri_queue->elems[pri_queue->size + 1] = min;
 }
 
 void priority_queue_clear(priority_queue *pri_queue)
