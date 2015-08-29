@@ -1,11 +1,12 @@
 #ifndef _PRIORITY_QUEUE_H
 #define _PRIORITY_QUEUE_H
 
-#inclued "libdef.h"
+#include "libdef.h"
 
 typedef struct priority_queue priority_queue;
 
 priority_queue* priority_queue_create(size_t elem_size, compare_func comparator);
+priority_queue* priority_queue_clone(const priority_queue *src);
 void priority_queue_destroy(priority_queue *pri_queue);
 
 int priority_queue_push(priority_queue *pri_queue, const void *elem);
