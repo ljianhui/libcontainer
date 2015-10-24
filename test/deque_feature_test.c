@@ -18,7 +18,7 @@ int main()
 
 	while (!deque_is_empty(clone))
 	{
-		printf("%d, ", *(int*)deque_first(clone));
+		printf("%d, ", *(int*)deque_get_first(clone));
 		deque_remove_first(clone);
 	}
 	printf("\n");
@@ -39,7 +39,7 @@ int main()
 	clone = deque_clone(deq);
 	while (!deque_is_empty(clone))
 	{
-		printf("%d, ", *(int*)deque_last(clone));
+		printf("%d, ", *(int*)deque_get_last(clone));
 		deque_remove_last(clone);
 	}
 	printf("\n");

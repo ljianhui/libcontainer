@@ -265,7 +265,7 @@ void deque_clear(deque *deq)
 	deq->size = 0;
 }
 
-void* deque_first(deque *deq)
+void* deque_get_first(deque *deq)
 {
 	if (deq == NULL)
 	{
@@ -276,7 +276,7 @@ void* deque_first(deque *deq)
 	return circle_queue_first(cq, deq->elem_size);
 }
 
-void* deque_last(deque *deq)
+void* deque_get_last(deque *deq)
 {
 	if (deq == NULL)
 	{
