@@ -27,9 +27,13 @@ static node* create_node(const void *elem, size_t elem_size)
 		return NULL;
 	}
 
-	if (elem != NULL && elem_size > 0)
+	if (elem != NULL)
 	{
 		memcpy(nd->elem, elem, elem_size);
+	}
+	else
+	{
+		memset(nd->elem, 0, elem_size);
 	}
 	nd->prev = nd->next = NULL;
 	return nd;
@@ -169,7 +173,7 @@ void list_destroy(list *lst)
 
 int list_add_first(list *lst, const void *elem)
 {
-	if (lst == NULL || elem == NULL)
+	if (lst == NULL)
 	{
 		return 0;
 	}
@@ -186,7 +190,7 @@ int list_add_first(list *lst, const void *elem)
 
 int list_append(list *lst, const void *elem)
 {
-	if (lst == NULL || elem == NULL)
+	if (lst == NULL)
 	{
 		return 0;
 	}
@@ -203,8 +207,7 @@ int list_append(list *lst, const void *elem)
 
 int list_add(list *lst, const void *elem, int index)
 {
-	if (lst == NULL || elem == NULL ||
-		index < 0 || index > lst->size)
+	if (lst == NULL || index < 0 || index > lst->size)
 	{
 		return 0;
 	}
