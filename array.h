@@ -49,9 +49,9 @@ void array_destroy(array *a);
 
 /**
  * Appends a depth copy of specified element to the end of this array
- * @return 1 if appends successfully, or 0 when failed 
+ * @return elem's point in array if appends successfully, or 0 when failed 
  */
-int array_append(array *a, const void *elem);
+void* array_add_last(array *a, const void *elem);
 
 /**
  * Removes the last element of array
@@ -62,9 +62,9 @@ int array_remove_last(array *a);
 /**
  * Adds a depth copy specified element at the specified position in this array
  * After this operator the index of specified element is index
- * @return 1 if adds successfully, or 0 when failed
+ * @return elem's point in array if adds successfully, or 0 when failed
  */
-int array_add(array *a, const void *elem, int index);
+void* array_add(array *a, const void *elem, int index);
 
 /**
  * Appends depth copy of all elements in the src array to the end of dst array

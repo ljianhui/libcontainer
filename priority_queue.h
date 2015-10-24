@@ -9,11 +9,11 @@ priority_queue* priority_queue_create(size_t elem_size, compare_func comparator)
 priority_queue* priority_queue_clone(const priority_queue *src);
 void priority_queue_destroy(priority_queue *pri_queue);
 
-int priority_queue_push(priority_queue *pri_queue, const void *elem);
+const void* priority_queue_push(priority_queue *pri_queue, const void *elem);
 void priority_queue_pop(priority_queue *pri_queue);
 void priority_queue_clear(priority_queue *pri_queue);
 
-void* priority_queue_top(priority_queue *pri_queue);
+const void* priority_queue_top(priority_queue *pri_queue);
 int priority_queue_size(priority_queue *pri_queue);
 int priority_queue_is_empty(priority_queue *pri_queue);
 

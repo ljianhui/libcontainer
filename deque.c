@@ -24,32 +24,36 @@ struct deque
 };
 
 
-static void circle_queue_add_first(circle_queue *cq, const void *elem, size_t elem_size)
+static void* circle_queue_add_first(circle_queue *cq, const void *elem, size_t elem_size)
 {
 	--cq->begin;
 	if (cq->begin < 0)
 	{
 		cq->begin = CQ_CAPACITY - 1;
 	}
+
+	void *dst = (void*)(cq->elems + elem_size * cq->begin);
 	if (elem != NULL)
 	{
-		memcpy(cq->elems + elem_size * cq->begin, elem, elem_size);
+		memcpy(dst, elem, elem_size);
 	}
 	else
 	{
-		memset(cq->elems + elem_size * cq->begin, 0, elem_size);
+		memset(dst, 0, elem_size);
 	}
+	return dst;
 }
 
-static void circle_queue_append(circle_queue *cq, const void *elem, size_t elem_size)
+static void* circle_queue_add_last(circle_queue *cq, const void *elem, size_t elem_size)
 {
+	void *dst = (void*)(cq->elems + elem_size * cq->end);
 	if (elem != NULL)
 	{
-		memcpy(cq->elems + elem_size * cq->end, elem, elem_size);
+		memcpy(dst, elem, elem_size);
 	}
 	else
 	{
-		memset(cq->elems + elem_size * cq->end, 0, elem_size);
+		memset(dst, 0, elem_size);
 	}
 
 	++cq->end;
@@ -57,6 +61,7 @@ static void circle_queue_append(circle_queue *cq, const void *elem, size_t elem_
 	{
 		cq->end = 0;
 	}
+	return dst;
 }
 
 static void circle_queue_remove_first(circle_queue *cq)
@@ -162,11 +167,11 @@ void deque_destroy(deque *deq)
 	free(deq);
 }
 
-int deque_add_first(deque *deq, const void *elem)
+void* deque_add_first(deque *deq, const void *elem)
 {
 	if (deq == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	circle_queue *cq = (circle_queue*)list_get_first(deq->cq_list);
@@ -178,39 +183,39 @@ int deque_add_first(deque *deq, const void *elem)
 		}
 		else
 		{
-			return 0;
+			return NULL;
 		}
 	}
 
-	circle_queue_add_first(cq, elem, deq->elem_size);
+	void *cq_elem = circle_queue_add_first(cq, elem, deq->elem_size);
 	++deq->size;
-	return 1;
+	return cq_elem;
 }
 
-int deque_append(deque *deq, const void *elem)
+void* deque_add_last(deque *deq, const void *elem)
 {
 	if (deq == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	circle_queue *cq = (circle_queue*)list_get_last(deq->cq_list);
 	// if circle queue is full
 	if (cq == NULL || cq->begin == cq->end)
 	{
-		if (list_append(deq->cq_list, NULL))
+		if (list_add_last(deq->cq_list, NULL))
 		{
 			cq = (circle_queue*)list_get_last(deq->cq_list);
 		}
 		else
 		{
-			return 0;
+			return NULL;
 		}
 	}
 
-	circle_queue_append(cq, elem, deq->elem_size);
+	void *cq_elem = circle_queue_add_last(cq, elem, deq->elem_size);
 	++deq->size;
-	return 1;
+	return cq_elem;
 }
 
 int deque_remove_first(deque *deq)

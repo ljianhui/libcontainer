@@ -23,7 +23,7 @@ int main()
 	int i = 0;
 	for (i = 0; i < 10; ++i)
 	{
-		array_append(a, &i);
+		array_add_last(a, &i);
 	}
 	array_iterator iterator;
 	array_iterator_init(a, &iterator);
@@ -84,9 +84,9 @@ int main()
 	printf("isEmpty: %d\n", array_is_empty(new_a));
 
 	value = 12;
-	array_append(new_a, &value);
+	array_add_last(new_a, &value);
 	value = 13;
-	array_append(new_a, &value);
+	array_add_last(new_a, &value);
 	array_foreach(new_a, visitor, NULL);
 	printf("\n");
 

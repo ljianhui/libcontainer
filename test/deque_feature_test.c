@@ -32,7 +32,7 @@ int main()
 
 	for (i = 0; i < 10; ++i)
 	{
-		deque_append(deq, &i);
+		deque_add_last(deq, &i);
 		deque_remove_first(deq);
 	}
 

@@ -12,7 +12,7 @@ int main()
 	array *a = array_create(sizeof(Dog), NULL);
 	for (i = 0; i < 1 * 1024 * 1024; ++i)
 	{
-		array_append(a, &d);
+		array_add_last(a, &d);
 	}
 	array_destroy(a);
 	return 0;

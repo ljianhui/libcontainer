@@ -121,18 +121,18 @@ void priority_queue_destroy(priority_queue *pri_queue)
 	free(pri_queue);
 }
 
-int priority_queue_push(priority_queue *pri_queue, const void *elem)
+const void* priority_queue_push(priority_queue *pri_queue, const void *elem)
 {
-	if (pri_queue == NULL || elem == NULL)
+	if (pri_queue == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	if (pri_queue->size >= pri_queue->capacity)
 	{
 		if (!reserve(pri_queue))
 		{
-			return 0;
+			return NULL;
 		}
 	}
 
@@ -143,18 +143,25 @@ int priority_queue_push(priority_queue *pri_queue, const void *elem)
 		new_elem = (elem_type)malloc(pri_queue->elem_size);
 		if (new_elem == NULL)
 		{
-			return 0;
+			return NULL;
 		}
+	}	
+	if (elem != NULL)
+	{
+		memcpy(new_elem, elem, pri_queue->elem_size);
 	}
-	memcpy(new_elem, elem, pri_queue->elem_size);
-
+	else
+	{
+		memset(new_elem, 0, pri_queue->elem_size);
+	}
+	
 	for (; i != 1 && pri_queue->comparator(elem, pri_queue->elems[i/2]) < 0; i /= 2)
 	{
 		pri_queue->elems[i] = pri_queue->elems[i/2];
 	}
 	pri_queue->elems[i] = new_elem;
 	++pri_queue->size;
-	return 1;
+	return new_elem;
 }
 
 void priority_queue_pop(priority_queue *pri_queue)
@@ -201,7 +208,7 @@ void priority_queue_clear(priority_queue *pri_queue)
 	pri_queue->size = 0;
 }
 
-void* priority_queue_top(priority_queue *pri_queue)
+const void* priority_queue_top(priority_queue *pri_queue)
 {
 	if (pri_queue == NULL || pri_queue->size == 0)
 	{

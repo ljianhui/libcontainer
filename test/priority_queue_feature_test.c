@@ -24,7 +24,7 @@ int main()
 	{
 		ret = rand() % 100;
 		printf("%d, ", ret);
-		ret = priority_queue_push(queue, &ret);
+		priority_queue_push(queue, &ret);
 	}
 
 	priority_queue *clone = priority_queue_clone(queue);

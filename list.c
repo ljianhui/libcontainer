@@ -171,56 +171,56 @@ void list_destroy(list *lst)
 	free(lst);
 }
 
-int list_add_first(list *lst, const void *elem)
+void* list_add_first(list *lst, const void *elem)
 {
 	if (lst == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	node *nd = create_node(elem, lst->elem_size);
 	if (nd == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	link_to_list(lst, nd, lst->head->next);
-	return 1;
+	return nd->elem;
 }
 
-int list_append(list *lst, const void *elem)
+void* list_add_last(list *lst, const void *elem)
 {
 	if (lst == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	node *nd = create_node(elem, lst->elem_size);
 	if (nd == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	link_to_list(lst, nd, lst->head);
-	return 1;
+	return nd->elem;
 }
 
-int list_add(list *lst, const void *elem, int index)
+void* list_add(list *lst, const void *elem, int index)
 {
 	if (lst == NULL || index < 0 || index > lst->size)
 	{
-		return 0;
+		return NULL;
 	}
 
 	node *nd = create_node(elem, lst->elem_size);
 	if (nd == NULL)
 	{
-		return 0;
+		return NULL;
 	}
 
 	node *pos = find_node(lst, index);
 	link_to_list(lst, nd, pos);
-	return 1;
+	return nd->elem;
 }
 
 int list_add_all(list *dst, const list *src)

@@ -31,7 +31,7 @@ int main()
 	list_clear(lst);
 	for (i = 0; i < 10; ++i)
 	{
-		list_append(lst, &i);
+		list_add_last(lst, &i);
 	}
 	list_foreach(lst, visitor, NULL);	// 2
 	printf("size: %d\n", list_size(lst));

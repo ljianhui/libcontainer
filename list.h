@@ -36,22 +36,22 @@ void list_destroy(list *lst);
 
 /**
  * Adds a depth copy of specified element to the begin of this list
- * @return 1 if appends successfully, or 0 when failed 
+ * @return elem's point in list if appends successfully, or 0 when failed 
  */
-int list_add_first(list *lst, const void *elem);
+void* list_add_first(list *lst, const void *elem);
 
 /**
  * Appends a depth copy of specified element to the end of this list
- * @return 1 if appends successfully, or 0 when failed 
+ * @return elem's point in list if appends successfully, or 0 when failed 
  */
-int list_append(list *lst, const void *elem);
+void* list_add_last(list *lst, const void *elem);
 
 /**
  * Adds a depth copy specified element at the specified position in this list
  * After this operator the index of specified element is index
- * @return 1 if adds successfully, or 0 when failed
+ * @return elem's point in list if adds successfully, or 0 when failed
  */
-int list_add(list *lst, const void *elem, int index);
+void* list_add(list *lst, const void *elem, int index);
 
 /**
  * Appends depth copy of all elements in the src list to the end of dst list

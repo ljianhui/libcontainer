@@ -147,7 +147,7 @@ void array_destroy(array *a)
 	free(a);
 }
 
-int array_append(array *a, const void *elem)
+void* array_add_last(array *a, const void *elem)
 {
 	return array_add(a, elem, a->size);
 }
@@ -157,11 +157,11 @@ int array_remove_last(array *a)
 	return array_remove(a, a->size-1);
 }
 
-int array_add(array *a, const void *elem, int index)
+void* array_add(array *a, const void *elem, int index)
 {
 	if (a == NULL || index < 0 || index > a->size)
 	{
-		return 0;
+		return NULL;
 	}
 
 	if (a->size == a->capacity)
@@ -169,14 +169,22 @@ int array_add(array *a, const void *elem, int index)
 		int new_capacity = 1 + a->capacity + (a->capacity >> 1);
 		if (!reserve(a, new_capacity))
 		{
-			return 0;
+			return NULL;
 		}
 	}
 
 	right_move(a, index);
-	memcpy(a->elems + a->elem_size * index, elem, a->elem_size);
+	char *dst = a->elems + a->elem_size * index;
+	if (elem != NULL)
+	{
+		memcpy(dst, elem, a->elem_size);	
+	}
+	else
+	{
+		memset(dst, 0, a->elem_size);
+	}
 	++a->size;
-	return 1;
+	return dst;
 }
 
 int array_add_all(array *dst, const array *src)
@@ -234,7 +242,8 @@ void* array_get(const array *a, int index)
 
 int array_set(array *a, const void *elem, int index)
 {
-	if (a == NULL || index < 0 || index >= a->size)
+	if (a == NULL || elem == NULL ||
+		index < 0 || index >= a->size)
 	{
 		return 0;
 	}
@@ -244,34 +253,20 @@ int array_set(array *a, const void *elem, int index)
 
 int array_index_of(const array *a, const void *elem)
 {
-	if (a == NULL || elem == NULL)
+	if (a == NULL || elem == NULL || a->comparator == NULL)
 	{
 		return -1;
 	}
 
 	int i = 0;
 	char *cur_elem = a->elems;
-	if (a->comparator != NULL)
+	for (i = 0; i < a->size; ++i)
 	{
-		for (i = 0; i < a->size; ++i)
+		if (a->comparator((const void*)cur_elem, elem) == 0)
 		{
-			if (a->comparator((const void*)cur_elem, elem) == 0)
-			{
-				return i;
-			}
-			cur_elem += a->elem_size;
+			return i;
 		}
-	}
-	else
-	{
-		for (i = 0; i < a->size; ++i)
-		{
-			if (memcmp(cur_elem, elem, a->elem_size) == 0)
-			{
-				return i;
-			}
-			cur_elem += a->elem_size;
-		}
+		cur_elem += a->elem_size;
 	}
 	return -1;
 }
