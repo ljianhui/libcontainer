@@ -3,7 +3,7 @@
 #include "deque.h"
 #include "list.h"
 
-#define CQ_CAPACITY 64
+#define CQ_CAPACITY 2
 
 struct circle_queue // fix circle queue
 {
@@ -82,7 +82,7 @@ static void circle_queue_remove_last(circle_queue *cq)
 	}
 }
 
-static void* circle_queue_first(circle_queue *cq, size_t elem_size)
+static void* circle_queue_first(const circle_queue *cq, size_t elem_size)
 {
 	if (cq == NULL)
 	{
@@ -91,7 +91,7 @@ static void* circle_queue_first(circle_queue *cq, size_t elem_size)
 	return (void*)(cq->elems + elem_size * cq->begin);
 }
 
-static void* circle_queue_last(circle_queue *cq, size_t elem_size)
+static void* circle_queue_last(const circle_queue *cq, size_t elem_size)
 {
 	if (cq == NULL)
 	{
@@ -265,7 +265,7 @@ void deque_clear(deque *deq)
 	deq->size = 0;
 }
 
-void* deque_get_first(deque *deq)
+void* deque_get_first(const deque *deq)
 {
 	if (deq == NULL)
 	{
@@ -276,7 +276,7 @@ void* deque_get_first(deque *deq)
 	return circle_queue_first(cq, deq->elem_size);
 }
 
-void* deque_get_last(deque *deq)
+void* deque_get_last(const deque *deq)
 {
 	if (deq == NULL)
 	{

@@ -15,8 +15,8 @@ int deque_remove_last(deque *deq);
 
 void deque_clear(deque *deq);
 
-void* deque_get_first(deque *deq);
-void* deque_get_last(deque *deq);
+void* deque_get_first(const deque *deq);
+void* deque_get_last(const deque *deq);
 
 int deque_is_empty(const deque *deq);
 int deque_size(const deque *deq);
