@@ -4,25 +4,25 @@
 int main()
 {
 	int i = 0;
-	stack *que = stack_create(sizeof(int));
+	stack *stk = stack_create(sizeof(int));
 	for (i = 0; i < 10; ++i)
 	{
-		stack_push(que, &i);
+		stack_push(stk, &i);
 	}
 
-	printf("stack.size == %d\n", stack_size(que));
+	printf("stack.size == %d\n", stack_size(stk));
 
 	for (i = 0; i < 5; ++i)
 	{
-		stack_pop(que);
+		stack_pop(stk);
 	}
 
 	for (i = 10; i < 15; ++i)
 	{
-		stack_push(que, &i);
+		stack_push(stk, &i);
 	}
 
-	stack *clone = stack_clone(que);
+	stack *clone = stack_clone(stk);
 	while (!stack_is_empty(clone))
 	{
 		printf("%d, ", *(int*)stack_top(clone));
@@ -32,18 +32,18 @@ int main()
 	printf("\n");
 
 
-	stack_clear(que);
+	stack_clear(stk);
 	for (i = 0; i < 5; ++i)
 	{
-		stack_push(que, &i);
+		stack_push(stk, &i);
 	}
-	while (!stack_is_empty(que))
+	while (!stack_is_empty(stk))
 	{
-		printf("%d, ", *(int*)stack_top(que));
-		stack_pop(que);
+		printf("%d, ", *(int*)stack_top(stk));
+		stack_pop(stk);
 	}
 	printf("\n");
 
-	stack_destroy(que);
+	stack_destroy(stk);
 	return 0;
 }
