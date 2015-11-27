@@ -1,49 +1,49 @@
 #include <stdio.h>
-#include "queue.h"
+#include "mky_queue.h"
 
 int main()
 {
 	int i = 0;
-	queue *que = queue_create(sizeof(int));
+	mky_queue *que = mky_queue_create(sizeof(int));
 	for (i = 0; i < 10; ++i)
 	{
-		queue_push(que, &i);
+		mky_queue_push(que, &i);
 	}
 
-	printf("queue.size == %d\n", queue_size(que));
+	printf("mky_queue.size == %d\n", mky_queue_size(que));
 
 	for (i = 0; i < 5; ++i)
 	{
-		queue_pop(que);
+		mky_queue_pop(que);
 	}
 
 	for (i = 10; i < 15; ++i)
 	{
-		queue_push(que, &i);
+		mky_queue_push(que, &i);
 	}
 
-	queue *clone = queue_clone(que);
-	while (!queue_is_empty(clone))
+	mky_queue *clone = mky_queue_clone(que);
+	while (!mky_queue_is_empty(clone))
 	{
-		printf("%d, ", *(int*)queue_top(clone));
-		queue_pop(clone);
+		printf("%d, ", *(int*)mky_queue_top(clone));
+		mky_queue_pop(clone);
 	}
-	queue_destroy(clone);
+	mky_queue_destroy(clone);
 	printf("\n");
 
 
-	queue_clear(que);
+	mky_queue_clear(que);
 	for (i = 0; i < 5; ++i)
 	{
-		queue_push(que, &i);
+		mky_queue_push(que, &i);
 	}
-	while (!queue_is_empty(que))
+	while (!mky_queue_is_empty(que))
 	{
-		printf("%d, ", *(int*)queue_top(que));
-		queue_pop(que);
+		printf("%d, ", *(int*)mky_queue_top(que));
+		mky_queue_pop(que);
 	}
 	printf("\n");
 
-	queue_destroy(que);
+	mky_queue_destroy(que);
 	return 0;
 }

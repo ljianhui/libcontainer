@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "array.h"
+#include "mky_array.h"
 
-struct array
+struct mky_array
 {
 	char *elems;
 	compare_func comparator;
@@ -12,7 +12,7 @@ struct array
 	int capacity;
 };
 
-static int reserve(array *a, int capacity)
+static int reserve(mky_array *a, int capacity)
 {
 	if (a == NULL || capacity <= a->size)
 	{
@@ -37,7 +37,7 @@ static int reserve(array *a, int capacity)
 	return 1;
 }
 
-static void left_move(array *a, int start)
+static void left_move(mky_array *a, int start)
 {
 	/*
 	const char *src = a->elems + start * a->elem_size;
@@ -55,7 +55,7 @@ static void left_move(array *a, int start)
 	}
 }
 
-static void right_move(array *a, int start)
+static void right_move(mky_array *a, int start)
 {
 	/*
 	const char *src = a->elems + start * a->elem_size;
@@ -73,15 +73,15 @@ static void right_move(array *a, int start)
 	}
 }
 
-array* array_create(size_t elem_size, compare_func comparator)
+mky_array* mky_array_create(size_t elem_size, compare_func comparator)
 {
-	return array_create_capacity(elem_size, 0, comparator);
+	return mky_array_create_capacity(elem_size, 0, comparator);
 }
 
-array* array_create_capacity(
+mky_array* mky_array_create_capacity(
 	size_t elem_size, int capacity, compare_func comparator)
 {
-	array *a = (array*)malloc(sizeof(array));
+	mky_array *a = (mky_array*)malloc(sizeof(mky_array));
 	if (a == NULL)
 	{
 		return NULL;
@@ -106,14 +106,14 @@ array* array_create_capacity(
 	return a;
 }
 
-array* array_clone(const array *src)
+mky_array* mky_array_clone(const mky_array *src)
 {
 	if (src == NULL)
 	{
 		return NULL;
 	}
 
-	array *a = array_create_capacity(
+	mky_array *a = mky_array_create_capacity(
 		src->elem_size, src->capacity, src->comparator);
 	if (a == NULL)
 	{
@@ -125,7 +125,7 @@ array* array_clone(const array *src)
 	return a;
 }
 
-void array_clear(array *a)
+void mky_array_clear(mky_array *a)
 {
 	if (a)
 	{
@@ -133,7 +133,7 @@ void array_clear(array *a)
 	}
 }
 
-void array_destroy(array *a)
+void mky_array_destroy(mky_array *a)
 {
 	if (a == NULL)
 	{
@@ -147,17 +147,17 @@ void array_destroy(array *a)
 	free(a);
 }
 
-void* array_add_last(array *a, const void *elem)
+void* mky_array_add_last(mky_array *a, const void *elem)
 {
-	return array_add(a, elem, a->size);
+	return mky_array_add(a, elem, a->size);
 }
 
-int array_remove_last(array *a)
+int mky_array_remove_last(mky_array *a)
 {
-	return array_remove(a, a->size-1);
+	return mky_array_remove(a, a->size-1);
 }
 
-void* array_add(array *a, const void *elem, int index)
+void* mky_array_add(mky_array *a, const void *elem, int index)
 {
 	if (a == NULL || index < 0 || index > a->size)
 	{
@@ -187,7 +187,7 @@ void* array_add(array *a, const void *elem, int index)
 	return dst;
 }
 
-int array_add_all(array *dst, const array *src)
+int mky_array_add_all(mky_array *dst, const mky_array *src)
 {
 	if (dst == NULL || src == NULL)
 	{
@@ -210,16 +210,16 @@ int array_add_all(array *dst, const array *src)
 	return 1;
 }
 
-int array_remove_elem(array *a, const void *elem)
+int mky_array_remove_elem(mky_array *a, const void *elem)
 {
 	if (a == NULL)
 	{
 		return 0;
 	}
-	return array_remove(a, array_index_of(a, elem));
+	return mky_array_remove(a, mky_array_index_of(a, elem));
 }
 
-int array_remove(array *a, int index)
+int mky_array_remove(mky_array *a, int index)
 {
 	if (a == NULL || index < 0 || index >= a->size)
 	{
@@ -231,7 +231,7 @@ int array_remove(array *a, int index)
 	return 1;
 }
 
-void* array_get(const array *a, int index)
+void* mky_array_get(const mky_array *a, int index)
 {
 	if (a == NULL || index < 0 || index >= a->size)
 	{
@@ -240,7 +240,7 @@ void* array_get(const array *a, int index)
 	return a->elems + a->elem_size * index;
 }
 
-int array_set(array *a, const void *elem, int index)
+int mky_array_set(mky_array *a, const void *elem, int index)
 {
 	if (a == NULL || elem == NULL ||
 		index < 0 || index >= a->size)
@@ -251,7 +251,7 @@ int array_set(array *a, const void *elem, int index)
 	return 1;
 }
 
-int array_index_of(const array *a, const void *elem)
+int mky_array_index_of(const mky_array *a, const void *elem)
 {
 	if (a == NULL || elem == NULL || a->comparator == NULL)
 	{
@@ -271,8 +271,8 @@ int array_index_of(const array *a, const void *elem)
 	return -1;
 }
 
-void array_foreach(
-	array *a, visit_func vistor, void *extra_data)
+void mky_array_foreach(
+	mky_array *a, visit_func vistor, void *extra_data)
 {
 	if (a == NULL || vistor == NULL)
 	{
@@ -291,7 +291,7 @@ void array_foreach(
 	}
 }
 
-int array_is_empty(const array *a)
+int mky_array_is_empty(const mky_array *a)
 {
 	if (a == NULL)
 	{
@@ -300,7 +300,7 @@ int array_is_empty(const array *a)
 	return !a->size;
 }
 
-int array_size(const array *a)
+int mky_array_size(const mky_array *a)
 {
 	if (a == NULL)
 	{
@@ -309,7 +309,7 @@ int array_size(const array *a)
 	return a->size;
 }
 
-int array_capacity(const array *a)
+int mky_array_capacity(const mky_array *a)
 {
 	if (a == NULL)
 	{
@@ -318,7 +318,7 @@ int array_capacity(const array *a)
 	return a->capacity;
 }
 
-int array_iterator_init(array *a, array_iterator *it)
+int mky_array_iter_init(mky_array *a, mky_array_iter *it)
 {
 	if (it == NULL)
 	{
@@ -330,28 +330,28 @@ int array_iterator_init(array *a, array_iterator *it)
 	return 1;
 }
 
-void* array_iterator_next(array_iterator *it)
+void* mky_array_iter_next(mky_array_iter *it)
 {
-	if (!array_iterator_has_next(it))
+	if (!mky_array_iter_has_next(it))
 	{
 		return NULL;
 	}
 
 	++it->cur_index;
-	return array_get(it->a, it->cur_index);
+	return mky_array_get(it->a, it->cur_index);
 }
 
-void* array_iterator_elem(array_iterator *it)
+void* mky_array_iter_elem(mky_array_iter *it)
 {
 	if (it == NULL || it->a == NULL)
 	{
 		return NULL;
 	}
 
-	return array_get(it->a, it->cur_index);
+	return mky_array_get(it->a, it->cur_index);
 }
 
-int array_iterator_has_next(const array_iterator *it)
+int mky_array_iter_has_next(const mky_array_iter *it)
 {
 	if (it == NULL || it->a == NULL)
 	{
@@ -360,11 +360,11 @@ int array_iterator_has_next(const array_iterator *it)
 	return it->cur_index < it->a->size - 1;
 }
 
-void array_iterator_remove(array_iterator *it)
+void mky_array_iter_remove(mky_array_iter *it)
 {
 	if (it != NULL && it->a != NULL && it->cur_index >= 0)
 	{
-		array_remove(it->a, it->cur_index);
+		mky_array_remove(it->a, it->cur_index);
 		--it->cur_index;
 	}
 }

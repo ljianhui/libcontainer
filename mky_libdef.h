@@ -1,5 +1,5 @@
-#ifndef _LIBDEF_H
-#define _LIBDEF_H
+#ifndef _MKY_LIBDEF_H
+#define _MKY_LIBDEF_H
 
 #include <stddef.h>
 
