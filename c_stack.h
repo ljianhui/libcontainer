@@ -1,5 +1,5 @@
-#ifndef _c_STACK_H
-#define _c_STACK_H
+#ifndef _C_STACK_H
+#define _C_STACK_H
 
 #include "c_libdef.h"
 

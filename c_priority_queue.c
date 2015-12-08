@@ -123,7 +123,7 @@ void c_priority_queue_destroy(c_priority_queue *pri_queue)
 
 const void* c_priority_queue_push(c_priority_queue *pri_queue, const void *elem)
 {
-	if (pri_queue == NULL)
+	if (pri_queue == NULL || elem == NULL)
 	{
 		return NULL;
 	}
@@ -146,7 +146,7 @@ const void* c_priority_queue_push(c_priority_queue *pri_queue, const void *elem)
 			return NULL;
 		}
 	}	
-	if (elem != NULL)
+	if (elem != C_ELEM_ZERO)
 	{
 		memcpy(new_elem, elem, pri_queue->elem_size);
 	}

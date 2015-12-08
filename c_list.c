@@ -27,7 +27,7 @@ static node* create_node(const void *elem, size_t elem_size)
 		return NULL;
 	}
 
-	if (elem != NULL)
+	if (elem != C_ELEM_ZERO)
 	{
 		memcpy(nd->elem, elem, elem_size);
 	}
@@ -173,7 +173,7 @@ void c_list_destroy(c_list *lst)
 
 void* c_list_add_first(c_list *lst, const void *elem)
 {
-	if (lst == NULL)
+	if (lst == NULL || elem == NULL)
 	{
 		return NULL;
 	}
@@ -190,7 +190,7 @@ void* c_list_add_first(c_list *lst, const void *elem)
 
 void* c_list_add_last(c_list *lst, const void *elem)
 {
-	if (lst == NULL)
+	if (lst == NULL || elem == NULL)
 	{
 		return NULL;
 	}
@@ -207,7 +207,7 @@ void* c_list_add_last(c_list *lst, const void *elem)
 
 void* c_list_add(c_list *lst, const void *elem, int index)
 {
-	if (lst == NULL || index < 0 || index > lst->size)
+	if (lst == NULL || elem == NULL || index < 0 || index > lst->size)
 	{
 		return NULL;
 	}
@@ -347,7 +347,15 @@ void c_list_set_first(c_list *lst, const void *elem)
 		return;
 	}
 
-	memcpy(lst->head->next->elem, elem, lst->elem_size);
+	if (elem != C_ELEM_ZERO)
+	{
+		memcpy(lst->head->next->elem, elem, lst->elem_size);
+	}
+	else
+	{
+		memset(lst->head->next->elem, 0, lst->elem_size);
+	}
+	
 }
 
 void c_list_set_last(c_list *lst, const void *elem)
@@ -357,12 +365,19 @@ void c_list_set_last(c_list *lst, const void *elem)
 		return;
 	}
 
-	memcpy(lst->head->prev->elem, elem, lst->elem_size);
+	if (elem != C_ELEM_ZERO)
+	{
+		memcpy(lst->head->prev->elem, elem, lst->elem_size);
+	}
+	else
+	{
+		memset(lst->head->prev->elem, 0, lst->elem_size);
+	}
 }
 
 void c_list_set(c_list *lst, const void *elem, int index)
 {
-	if (lst == NULL || index < 0 || index >= lst->size)
+	if (lst == NULL || elem == NULL || index < 0 || index >= lst->size)
 	{
 		return;
 	}
@@ -373,7 +388,14 @@ void c_list_set(c_list *lst, const void *elem, int index)
 		return;
 	}
 
-	memcpy(nd->elem, elem, lst->elem_size);
+	if (elem != C_ELEM_ZERO)
+	{
+		memcpy(nd->elem, elem, lst->elem_size);
+	}
+	else
+	{
+		memset(nd->elem, 0, lst->elem_size);
+	}
 }
 
 void c_list_foreach(c_list *lst, visit_func vistor, void *extra_data)

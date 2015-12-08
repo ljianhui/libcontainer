@@ -159,7 +159,7 @@ int c_array_remove_last(c_array *a)
 
 void* c_array_add(c_array *a, const void *elem, int index)
 {
-	if (a == NULL || index < 0 || index > a->size)
+	if (a == NULL || elem == NULL || index < 0 || index > a->size)
 	{
 		return NULL;
 	}
@@ -175,7 +175,7 @@ void* c_array_add(c_array *a, const void *elem, int index)
 
 	right_move(a, index);
 	char *dst = a->elems + a->elem_size * index;
-	if (elem != NULL)
+	if (elem != C_ELEM_ZERO)
 	{
 		memcpy(dst, elem, a->elem_size);	
 	}
@@ -247,7 +247,16 @@ int c_array_set(c_array *a, const void *elem, int index)
 	{
 		return 0;
 	}
-	memcpy(a->elems + a->elem_size * index, elem, a->elem_size);
+	
+	if (elem != C_ELEM_ZERO)
+	{
+		memcpy(a->elems + a->elem_size * index, elem, a->elem_size);
+	}
+	else
+	{
+		memset(a->elems + a->elem_size * index, 0, a->elem_size);
+	}
+	
 	return 1;
 }
 

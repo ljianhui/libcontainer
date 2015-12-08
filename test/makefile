@@ -4,13 +4,13 @@ CFLAG := -I ../ -L ../ -g
 VPATH=./:../ 
 
 all: array_feature_test array_effect_test \
-     list_feature_test\
+	 list_feature_test\
 	 priority_queue_feature_test\
 	 deque_feature_test\
 	 queue_feature_test\
 	 stack_feature_test
 
-array_feature_test: array_feature_test.c c_array.h c_array.c
+array_feature_test: array_feature_test.c c_array.h c_array.c c_libdef.h
 	$(CC) -o array_feature_test array_feature_test.c ../c_array.c $(CFLAG)
 
 array_effect_test: array_effect_test.c c_array.h c_array.c

@@ -15,5 +15,8 @@ typedef int(*compare_func)(const void *x, const void *y);
  */
 typedef int(*visit_func)(void *element, void *extra);
 
+static const int C_INT_ZERO = 0;
+static const void* C_ELEM_ZERO = (const void*)&C_INT_ZERO;
+
 #endif
 

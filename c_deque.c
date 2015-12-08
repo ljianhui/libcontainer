@@ -33,7 +33,7 @@ static void* circle_queue_add_first(circle_queue *cq, const void *elem, size_t e
 	}
 
 	void *dst = (void*)(cq->elems + elem_size * cq->begin);
-	if (elem != NULL)
+	if (elem != C_ELEM_ZERO)
 	{
 		memcpy(dst, elem, elem_size);
 	}
@@ -47,7 +47,7 @@ static void* circle_queue_add_first(circle_queue *cq, const void *elem, size_t e
 static void* circle_queue_add_last(circle_queue *cq, const void *elem, size_t elem_size)
 {
 	void *dst = (void*)(cq->elems + elem_size * cq->end);
-	if (elem != NULL)
+	if (elem != C_ELEM_ZERO)
 	{
 		memcpy(dst, elem, elem_size);
 	}
@@ -169,7 +169,7 @@ void c_deque_destroy(c_deque *deq)
 
 void* c_deque_add_first(c_deque *deq, const void *elem)
 {
-	if (deq == NULL)
+	if (deq == NULL || elem == NULL)
 	{
 		return NULL;
 	}
@@ -177,7 +177,7 @@ void* c_deque_add_first(c_deque *deq, const void *elem)
 	circle_queue *cq = (circle_queue*)c_list_get_first(deq->cq_list);
 	if (cq == NULL || cq->begin == cq->end)
 	{
-		if (c_list_add_first(deq->cq_list, NULL))
+		if (c_list_add_first(deq->cq_list, C_ELEM_ZERO))
 		{
 			cq = (circle_queue*)c_list_get_first(deq->cq_list);
 		}
@@ -194,7 +194,7 @@ void* c_deque_add_first(c_deque *deq, const void *elem)
 
 void* c_deque_add_last(c_deque *deq, const void *elem)
 {
-	if (deq == NULL)
+	if (deq == NULL || elem == NULL)
 	{
 		return NULL;
 	}
@@ -203,7 +203,7 @@ void* c_deque_add_last(c_deque *deq, const void *elem)
 	// if circle queue is full
 	if (cq == NULL || cq->begin == cq->end)
 	{
-		if (c_list_add_last(deq->cq_list, NULL))
+		if (c_list_add_last(deq->cq_list, C_ELEM_ZERO))
 		{
 			cq = (circle_queue*)c_list_get_last(deq->cq_list);
 		}
