@@ -177,14 +177,13 @@ void* c_deque_add_first(c_deque *deq, const void *elem)
 	circle_queue *cq = (circle_queue*)c_list_get_first(deq->cq_list);
 	if (cq == NULL || cq->begin == cq->end)
 	{
-		if (c_list_add_first(deq->cq_list, C_ELEM_ZERO))
-		{
-			cq = (circle_queue*)c_list_get_first(deq->cq_list);
-		}
-		else
+		cq = c_list_add_first(deq->cq_list, C_ELEM_ZERO);
+		if (cq == NULL)
 		{
 			return NULL;
 		}
+		
+		cq->begin = cq->end = 0;
 	}
 
 	void *cq_elem = circle_queue_add_first(cq, elem, deq->elem_size);
@@ -203,14 +202,14 @@ void* c_deque_add_last(c_deque *deq, const void *elem)
 	// if circle queue is full
 	if (cq == NULL || cq->begin == cq->end)
 	{
-		if (c_list_add_last(deq->cq_list, C_ELEM_ZERO))
-		{
-			cq = (circle_queue*)c_list_get_last(deq->cq_list);
-		}
-		else
+		cq = c_list_add_last(deq->cq_list, C_ELEM_ZERO);
+		if (cq == NULL)
 		{
 			return NULL;
 		}
+
+		cq->begin = cq->end = 0;
+
 	}
 
 	void *cq_elem = circle_queue_add_last(cq, elem, deq->elem_size);
