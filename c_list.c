@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <memory.h>
-#include "mky_list.h"
+#include "c_list.h"
 
 struct node
 {
@@ -10,7 +10,7 @@ struct node
 };
 typedef struct node node;
 
-struct mky_list
+struct c_list
 {
 	struct node *head;
 	compare_func comparator;
@@ -39,7 +39,7 @@ static node* create_node(const void *elem, size_t elem_size)
 	return nd;
 }
 
-static void link_to_mky_list(mky_list *lst, node *x, node *y)
+static void link_to_c_list(c_list *lst, node *x, node *y)
 {
 	x->prev = y->prev;
 	y->prev->next = x;
@@ -48,7 +48,7 @@ static void link_to_mky_list(mky_list *lst, node *x, node *y)
 	++lst->size;
 }
 
-static node* find_node(const mky_list *lst, int index)
+static node* find_node(const c_list *lst, int index)
 {
 	int i = 0;
 	node *nd = lst->head;
@@ -69,7 +69,7 @@ static node* find_node(const mky_list *lst, int index)
 	return nd;
 }
 
-static void unlink_from_mky_list(mky_list *lst, node *nd)
+static void unlink_from_c_list(c_list *lst, node *nd)
 {
 	if (lst->head == nd)
 	{
@@ -83,14 +83,14 @@ static void unlink_from_mky_list(mky_list *lst, node *nd)
 	--lst->size;
 }
 
-mky_list* mky_list_create(size_t elem_size, compare_func comparator)
+c_list* c_list_create(size_t elem_size, compare_func comparator)
 {
 	if (elem_size == 0)
 	{
 		return NULL;
 	}
 
-	mky_list *lst = (mky_list*)malloc(sizeof(struct mky_list));
+	c_list *lst = (c_list*)malloc(sizeof(struct c_list));
 	if (lst == NULL)
 	{
 		return NULL;
@@ -112,14 +112,14 @@ mky_list* mky_list_create(size_t elem_size, compare_func comparator)
 	lst->size = 0;
 }
 
-mky_list* mky_list_clone(const mky_list *src)
+c_list* c_list_clone(const c_list *src)
 {
 	if (src == NULL)
 	{
 		return NULL;
 	}
 
-	mky_list *dst = mky_list_create(src->elem_size, src->comparator);
+	c_list *dst = c_list_create(src->elem_size, src->comparator);
 	if (dst == NULL)
 	{
 		return NULL;
@@ -132,16 +132,16 @@ mky_list* mky_list_clone(const mky_list *src)
 		dst_node = create_node(src_node->elem, src->elem_size);
 		if (dst_node == NULL)
 		{
-			mky_list_destroy(dst);
+			c_list_destroy(dst);
 			return NULL;
 		}
-		link_to_mky_list(dst, dst_node, dst->head);
+		link_to_c_list(dst, dst_node, dst->head);
 		src_node = src_node->next;
 	}
 	return dst;
 }
 
-void mky_list_clear(mky_list *lst)
+void c_list_clear(c_list *lst)
 {
 	if (lst == NULL)
 	{
@@ -160,18 +160,18 @@ void mky_list_clear(mky_list *lst)
 	lst->size = 0;
 }
 
-void mky_list_destroy(mky_list *lst)
+void c_list_destroy(c_list *lst)
 {
 	if (lst == NULL)
 	{
 		return;
 	}
-	mky_list_clear(lst);
+	c_list_clear(lst);
 	free(lst->head);
 	free(lst);
 }
 
-void* mky_list_add_first(mky_list *lst, const void *elem)
+void* c_list_add_first(c_list *lst, const void *elem)
 {
 	if (lst == NULL)
 	{
@@ -184,11 +184,11 @@ void* mky_list_add_first(mky_list *lst, const void *elem)
 		return NULL;
 	}
 
-	link_to_mky_list(lst, nd, lst->head->next);
+	link_to_c_list(lst, nd, lst->head->next);
 	return nd->elem;
 }
 
-void* mky_list_add_last(mky_list *lst, const void *elem)
+void* c_list_add_last(c_list *lst, const void *elem)
 {
 	if (lst == NULL)
 	{
@@ -201,11 +201,11 @@ void* mky_list_add_last(mky_list *lst, const void *elem)
 		return NULL;
 	}
 
-	link_to_mky_list(lst, nd, lst->head);
+	link_to_c_list(lst, nd, lst->head);
 	return nd->elem;
 }
 
-void* mky_list_add(mky_list *lst, const void *elem, int index)
+void* c_list_add(c_list *lst, const void *elem, int index)
 {
 	if (lst == NULL || index < 0 || index > lst->size)
 	{
@@ -219,11 +219,11 @@ void* mky_list_add(mky_list *lst, const void *elem, int index)
 	}
 
 	node *pos = find_node(lst, index);
-	link_to_mky_list(lst, nd, pos);
+	link_to_c_list(lst, nd, pos);
 	return nd->elem;
 }
 
-int mky_list_add_all(mky_list *dst, const mky_list *src)
+int c_list_add_all(c_list *dst, const c_list *src)
 {
 	if (dst == NULL || src == NULL)
 	{
@@ -235,7 +235,7 @@ int mky_list_add_all(mky_list *dst, const mky_list *src)
 		return 1;
 	}
 
-	mky_list *tmp = mky_list_clone(src);
+	c_list *tmp = c_list_clone(src);
 	if (tmp == NULL)
 	{
 		return 0;
@@ -248,35 +248,35 @@ int mky_list_add_all(mky_list *dst, const mky_list *src)
 
 	tmp->head->next = tmp->head;
 	tmp->head->prev = tmp->head;
-	mky_list_destroy(tmp);
+	c_list_destroy(tmp);
 
 	dst->size += src->size;
 	return 1;
 }
 
-int mky_list_remove_first(mky_list *lst)
+int c_list_remove_first(c_list *lst)
 {
 	if (lst == NULL || lst->size == 0)
 	{
 		return 0;
 	}
 
-	unlink_from_mky_list(lst, lst->head->next);
+	unlink_from_c_list(lst, lst->head->next);
 	return 1;
 }
 
-int mky_list_remove_last(mky_list *lst)
+int c_list_remove_last(c_list *lst)
 {
 	if (lst == NULL || lst->size == 0)
 	{
 		return 0;
 	}
 
-	unlink_from_mky_list(lst, lst->head->prev);
+	unlink_from_c_list(lst, lst->head->prev);
 	return 1;
 }
 
-int mky_list_remove_elem(mky_list *lst, const void *elem)
+int c_list_remove_elem(c_list *lst, const void *elem)
 {
 	if (lst == NULL || elem == NULL || lst->comparator == NULL)
 	{
@@ -289,7 +289,7 @@ int mky_list_remove_elem(mky_list *lst, const void *elem)
 	{
 		if (lst->comparator(nd->elem, elem) == 0)
 		{
-			unlink_from_mky_list(lst, nd);
+			unlink_from_c_list(lst, nd);
 			return 1;
 		}
 		nd = nd->next;
@@ -297,7 +297,7 @@ int mky_list_remove_elem(mky_list *lst, const void *elem)
 	return 0;
 }
 
-int mky_list_remove(mky_list *lst, int index)
+int c_list_remove(c_list *lst, int index)
 {
 	if (lst == NULL || index < 0 || index > lst->size)
 	{
@@ -305,11 +305,11 @@ int mky_list_remove(mky_list *lst, int index)
 	}
 
 	node *nd = find_node(lst, index);
-	unlink_from_mky_list(lst, nd);
+	unlink_from_c_list(lst, nd);
 	return 1;
 }
 
-void* mky_list_get_first(const mky_list *lst)
+void* c_list_get_first(const c_list *lst)
 {
 	if (lst == NULL || lst->size == 0)
 	{
@@ -319,7 +319,7 @@ void* mky_list_get_first(const mky_list *lst)
 	return (void*)lst->head->next->elem;
 }
 
-void* mky_list_get_last(const mky_list *lst)
+void* c_list_get_last(const c_list *lst)
 {
 	if (lst == NULL || lst->size == 0)
 	{
@@ -329,7 +329,7 @@ void* mky_list_get_last(const mky_list *lst)
 	return (void*)lst->head->prev->elem;
 }
 
-void* mky_list_get(const mky_list *lst, int index)
+void* c_list_get(const c_list *lst, int index)
 {
 	if (lst == NULL || index < 0 || index >= lst->size)
 	{
@@ -340,7 +340,7 @@ void* mky_list_get(const mky_list *lst, int index)
 	return (void*)nd->elem;
 }
 
-void mky_list_set_first(mky_list *lst, const void *elem)
+void c_list_set_first(c_list *lst, const void *elem)
 {
 	if (lst == NULL || lst->size == 0 || elem == NULL)
 	{
@@ -350,7 +350,7 @@ void mky_list_set_first(mky_list *lst, const void *elem)
 	memcpy(lst->head->next->elem, elem, lst->elem_size);
 }
 
-void mky_list_set_last(mky_list *lst, const void *elem)
+void c_list_set_last(c_list *lst, const void *elem)
 {
 	if (lst == NULL || lst->size == 0 || elem == NULL)
 	{
@@ -360,7 +360,7 @@ void mky_list_set_last(mky_list *lst, const void *elem)
 	memcpy(lst->head->prev->elem, elem, lst->elem_size);
 }
 
-void mky_list_set(mky_list *lst, const void *elem, int index)
+void c_list_set(c_list *lst, const void *elem, int index)
 {
 	if (lst == NULL || index < 0 || index >= lst->size)
 	{
@@ -376,7 +376,7 @@ void mky_list_set(mky_list *lst, const void *elem, int index)
 	memcpy(nd->elem, elem, lst->elem_size);
 }
 
-void mky_list_foreach(mky_list *lst, visit_func vistor, void *extra_data)
+void c_list_foreach(c_list *lst, visit_func vistor, void *extra_data)
 {
 	if (lst == NULL || vistor == NULL)
 	{
@@ -394,7 +394,7 @@ void mky_list_foreach(mky_list *lst, visit_func vistor, void *extra_data)
 	}
 }
 
-int mky_list_find(const mky_list *lst, const void *elem, mky_list_iter *it)
+int c_list_find(const c_list *lst, const void *elem, c_list_iter *it)
 {
 	if (lst == NULL || lst->comparator == NULL || elem == NULL)
 	{
@@ -408,7 +408,7 @@ int mky_list_find(const mky_list *lst, const void *elem, mky_list_iter *it)
 		{
 			if (it != NULL)
 			{
-				it->lst = (mky_list*)lst;
+				it->lst = (c_list*)lst;
 				it->cur_node = nd;
 			}
 			return 1;
@@ -418,17 +418,17 @@ int mky_list_find(const mky_list *lst, const void *elem, mky_list_iter *it)
 	return 0;
 }
 
-int mky_list_size(const mky_list *lst)
+int c_list_size(const c_list *lst)
 {
 	return lst->size;
 }
 
-int mky_list_is_empty(const mky_list *lst)
+int c_list_is_empty(const c_list *lst)
 {
 	return lst->size == 0;
 }
 
-int mky_list_iter_init(mky_list *lst, mky_list_iter *it)
+int c_list_iter_init(c_list *lst, c_list_iter *it)
 {
 	if (it == NULL)
 	{
@@ -440,10 +440,10 @@ int mky_list_iter_init(mky_list *lst, mky_list_iter *it)
 	return 1;
 }
 
-void* mky_list_iter_next(mky_list_iter *it)
+void* c_list_iter_next(c_list_iter *it)
 {
 	// if it->lst == NULL, it->cur_node is NULL too.
-	if (!mky_list_iter_has_next(it))
+	if (!c_list_iter_has_next(it))
 	{
 		return NULL;
 	}
@@ -452,7 +452,7 @@ void* mky_list_iter_next(mky_list_iter *it)
 	return (void*)(it->cur_node->elem);
 }
 
-void* mky_list_iter_elem(const mky_list_iter *it)
+void* c_list_iter_elem(const c_list_iter *it)
 {
 	if (it == NULL || it->cur_node == NULL)
 	{
@@ -462,7 +462,7 @@ void* mky_list_iter_elem(const mky_list_iter *it)
 	return (void*)(it->cur_node->elem);
 }
 
-int mky_list_iter_has_next(const mky_list_iter *it)
+int c_list_iter_has_next(const c_list_iter *it)
 {
 	if (it == NULL || it->cur_node == NULL)
 	{
@@ -472,7 +472,7 @@ int mky_list_iter_has_next(const mky_list_iter *it)
 	return it->cur_node->next != it->lst->head;
 }
 
-void mky_list_iter_remove(mky_list_iter *it)
+void c_list_iter_remove(c_list_iter *it)
 {
 	if (it == NULL || it->cur_node == NULL)
 	{
@@ -480,11 +480,11 @@ void mky_list_iter_remove(mky_list_iter *it)
 	}
 
 	node *nd = it->cur_node->prev;
-	unlink_from_mky_list(it->lst, it->cur_node);
+	unlink_from_c_list(it->lst, it->cur_node);
 	it->cur_node = nd;
 }
 
-void mky_list_iter_add(mky_list_iter *it, const void *elem)
+void c_list_iter_add(c_list_iter *it, const void *elem)
 {
 	if (it == NULL || it->cur_node == NULL)
 	{
@@ -497,6 +497,6 @@ void mky_list_iter_add(mky_list_iter *it, const void *elem)
 		return;
 	}
 
-	link_to_mky_list(it->lst, nd, it->cur_node);
+	link_to_c_list(it->lst, nd, it->cur_node);
 	it->cur_node = nd;
 }

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <stdio.h>
-#include "mky_priority_queue.h"
+#include "c_priority_queue.h"
 
 // The index of elems begin from 1, not 0
 
@@ -9,7 +9,7 @@
 
 typedef void* elem_type;
 
-struct mky_priority_queue
+struct c_priority_queue
 {
 	elem_type *elems;
 	int elem_size;
@@ -18,7 +18,7 @@ struct mky_priority_queue
 	compare_func comparator;
 };
 
-static int reserve(mky_priority_queue *pri_queue)
+static int reserve(c_priority_queue *pri_queue)
 {
 	int new_capacity = pri_queue->capacity + (pri_queue->capacity >> 1);
 
@@ -37,14 +37,14 @@ static int reserve(mky_priority_queue *pri_queue)
 	return 1;
 }
 
-static mky_priority_queue* create_mky_priority_queue(size_t elem_size, compare_func comparator, int capacity)
+static c_priority_queue* create_c_priority_queue(size_t elem_size, compare_func comparator, int capacity)
 {
 	if (comparator == NULL || elem_size == 0 || capacity <= 0)
 	{
 		return NULL;
 	}
 
-	mky_priority_queue *pri_queue = (mky_priority_queue*)malloc(sizeof(mky_priority_queue));
+	c_priority_queue *pri_queue = (c_priority_queue*)malloc(sizeof(c_priority_queue));
 	if (pri_queue == NULL)
 	{
 		return NULL;
@@ -65,19 +65,19 @@ static mky_priority_queue* create_mky_priority_queue(size_t elem_size, compare_f
 	return pri_queue;
 }
 
-mky_priority_queue* mky_priority_queue_create(size_t elem_size, compare_func comparator)
+c_priority_queue* c_priority_queue_create(size_t elem_size, compare_func comparator)
 {
-	return create_mky_priority_queue(elem_size, comparator, MIN_PRI_QUEUE_SIZE);
+	return create_c_priority_queue(elem_size, comparator, MIN_PRI_QUEUE_SIZE);
 }
 
-mky_priority_queue* mky_priority_queue_clone(const mky_priority_queue *src)
+c_priority_queue* c_priority_queue_clone(const c_priority_queue *src)
 {
 	if (src == NULL)
 	{
 		return NULL;
 	}
 
-	mky_priority_queue *dst = create_mky_priority_queue(src->elem_size, src->comparator, src->capacity);
+	c_priority_queue *dst = create_c_priority_queue(src->elem_size, src->comparator, src->capacity);
 	if (dst == NULL)
 	{
 		return NULL;
@@ -90,7 +90,7 @@ mky_priority_queue* mky_priority_queue_clone(const mky_priority_queue *src)
 		elem = (elem_type)malloc(src->elem_size);
 		if (elem == NULL)
 		{
-			mky_priority_queue_destroy(dst);
+			c_priority_queue_destroy(dst);
 			return NULL;
 		}
 		memcpy(elem, src->elems[i], src->elem_size);
@@ -101,7 +101,7 @@ mky_priority_queue* mky_priority_queue_clone(const mky_priority_queue *src)
 	return dst;
 }
 
-void mky_priority_queue_destroy(mky_priority_queue *pri_queue)
+void c_priority_queue_destroy(c_priority_queue *pri_queue)
 {
 	if (pri_queue == NULL)
 	{
@@ -121,7 +121,7 @@ void mky_priority_queue_destroy(mky_priority_queue *pri_queue)
 	free(pri_queue);
 }
 
-const void* mky_priority_queue_push(mky_priority_queue *pri_queue, const void *elem)
+const void* c_priority_queue_push(c_priority_queue *pri_queue, const void *elem)
 {
 	if (pri_queue == NULL)
 	{
@@ -164,7 +164,7 @@ const void* mky_priority_queue_push(mky_priority_queue *pri_queue, const void *e
 	return new_elem;
 }
 
-void mky_priority_queue_pop(mky_priority_queue *pri_queue)
+void c_priority_queue_pop(c_priority_queue *pri_queue)
 {
 	if (pri_queue == NULL || pri_queue->size == 0)
 	{
@@ -198,7 +198,7 @@ void mky_priority_queue_pop(mky_priority_queue *pri_queue)
 	pri_queue->elems[pri_queue->size + 1] = min;
 }
 
-void mky_priority_queue_clear(mky_priority_queue *pri_queue)
+void c_priority_queue_clear(c_priority_queue *pri_queue)
 {
 	if (pri_queue == NULL)
 	{
@@ -208,7 +208,7 @@ void mky_priority_queue_clear(mky_priority_queue *pri_queue)
 	pri_queue->size = 0;
 }
 
-const void* mky_priority_queue_top(mky_priority_queue *pri_queue)
+const void* c_priority_queue_top(c_priority_queue *pri_queue)
 {
 	if (pri_queue == NULL || pri_queue->size == 0)
 	{
@@ -218,7 +218,7 @@ const void* mky_priority_queue_top(mky_priority_queue *pri_queue)
 	return pri_queue->elems[1];
 }
 
-int mky_priority_queue_size(mky_priority_queue *pri_queue)
+int c_priority_queue_size(c_priority_queue *pri_queue)
 {
 	if (pri_queue == NULL)
 	{
@@ -228,7 +228,7 @@ int mky_priority_queue_size(mky_priority_queue *pri_queue)
 	return pri_queue->size;
 }
 
-int mky_priority_queue_is_empty(mky_priority_queue *pri_queue)
+int c_priority_queue_is_empty(c_priority_queue *pri_queue)
 {
 	if (pri_queue == NULL)
 	{

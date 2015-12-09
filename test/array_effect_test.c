@@ -1,4 +1,4 @@
-#include "mky_array.h"
+#include "c_array.h"
 
 typedef struct
 {
@@ -9,11 +9,11 @@ int main()
 {
 	int i = 0;
 	Dog d;
-	mky_array *a = mky_array_create(sizeof(Dog), NULL);
+	c_array *a = c_array_create(sizeof(Dog), NULL);
 	for (i = 0; i < 1 * 1024 * 1024; ++i)
 	{
-		mky_array_add_last(a, &d);
+		c_array_add_last(a, &d);
 	}
-	mky_array_destroy(a);
+	c_array_destroy(a);
 	return 0;
 }
