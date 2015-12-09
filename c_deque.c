@@ -182,8 +182,6 @@ void* c_deque_add_first(c_deque *deq, const void *elem)
 		{
 			return NULL;
 		}
-		
-		cq->begin = cq->end = 0;
 	}
 
 	void *cq_elem = circle_queue_add_first(cq, elem, deq->elem_size);
@@ -207,9 +205,6 @@ void* c_deque_add_last(c_deque *deq, const void *elem)
 		{
 			return NULL;
 		}
-
-		cq->begin = cq->end = 0;
-
 	}
 
 	void *cq_elem = circle_queue_add_last(cq, elem, deq->elem_size);

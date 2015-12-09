@@ -110,6 +110,8 @@ c_list* c_list_create(size_t elem_size, compare_func comparator)
 	lst->comparator = comparator;
 	lst->elem_size = elem_size;
 	lst->size = 0;
+
+	return lst;
 }
 
 c_list* c_list_clone(const c_list *src)
