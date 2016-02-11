@@ -2,26 +2,26 @@
 #include <memory.h>
 #include "c_list.h"
 
-struct node
+struct c_list_node
 {
-	struct node *prev;
-	struct node *next;
+	struct c_list_node *prev;
+	struct c_list_node *next;
 	char elem[0];
 };
-typedef struct node node;
+typedef struct c_list_node c_list_node;
 
 struct c_list
 {
-	struct node *head;
+	struct c_list_node *head;
 	compare_func comparator;
 	size_t elem_size;
 	int size;
 };
 
 
-static node* create_node(const void *elem, size_t elem_size)
+static c_list_node* c_list_node_create(const void *elem, size_t elem_size)
 {
-	node *nd = (node*)malloc(sizeof(struct node) + elem_size);
+	c_list_node *nd = (c_list_node*)malloc(sizeof(c_list_node) + elem_size);
 	if (nd == NULL)
 	{
 		return NULL;
@@ -39,7 +39,7 @@ static node* create_node(const void *elem, size_t elem_size)
 	return nd;
 }
 
-static void link_to_c_list(c_list *lst, node *x, node *y)
+static void c_list_link(c_list *lst, c_list_node *x, c_list_node *y)
 {
 	x->prev = y->prev;
 	y->prev->next = x;
@@ -48,10 +48,10 @@ static void link_to_c_list(c_list *lst, node *x, node *y)
 	++lst->size;
 }
 
-static node* find_node(const c_list *lst, int index)
+static c_list_node* c_list_find_node(const c_list *lst, int index)
 {
 	int i = 0;
-	node *nd = lst->head;
+	c_list_node *nd = lst->head;
 	if (index <= lst->size/2)
 	{
 		for (i = 0; i <= index; ++i)
@@ -69,7 +69,7 @@ static node* find_node(const c_list *lst, int index)
 	return nd;
 }
 
-static void unlink_from_c_list(c_list *lst, node *nd)
+static void c_list_unlink(c_list *lst, c_list_node *nd)
 {
 	if (lst->head == nd)
 	{
@@ -96,7 +96,7 @@ c_list* c_list_create(size_t elem_size, compare_func comparator)
 		return NULL;
 	}
 
-	node *head = (node*)malloc(sizeof(struct node));
+	c_list_node *head = (c_list_node*)malloc(sizeof(c_list_node));
 	if (head == NULL)
 	{
 		free(lst);
@@ -127,17 +127,17 @@ c_list* c_list_clone(const c_list *src)
 		return NULL;
 	}
 
-	node *src_node = src->head->next;
-	node *dst_node = NULL;
+	c_list_node *src_node = src->head->next;
+	c_list_node *dst_node = NULL;
 	while (src_node != src->head)
 	{
-		dst_node = create_node(src_node->elem, src->elem_size);
+		dst_node = c_list_node_create(src_node->elem, src->elem_size);
 		if (dst_node == NULL)
 		{
 			c_list_destroy(dst);
 			return NULL;
 		}
-		link_to_c_list(dst, dst_node, dst->head);
+		c_list_link(dst, dst_node, dst->head);
 		src_node = src_node->next;
 	}
 	return dst;
@@ -150,8 +150,8 @@ void c_list_clear(c_list *lst)
 		return;
 	}
 
-	node *free_node = lst->head->next;
-	node *next_node = free_node->next;
+	c_list_node *free_node = lst->head->next;
+	c_list_node *next_node = free_node->next;
 	while (free_node != lst->head)
 	{
 		free(free_node);
@@ -180,13 +180,13 @@ void* c_list_add_first(c_list *lst, const void *elem)
 		return NULL;
 	}
 
-	node *nd = create_node(elem, lst->elem_size);
+	c_list_node *nd = c_list_node_create(elem, lst->elem_size);
 	if (nd == NULL)
 	{
 		return NULL;
 	}
 
-	link_to_c_list(lst, nd, lst->head->next);
+	c_list_link(lst, nd, lst->head->next);
 	return nd->elem;
 }
 
@@ -197,13 +197,13 @@ void* c_list_add_last(c_list *lst, const void *elem)
 		return NULL;
 	}
 
-	node *nd = create_node(elem, lst->elem_size);
+	c_list_node *nd = c_list_node_create(elem, lst->elem_size);
 	if (nd == NULL)
 	{
 		return NULL;
 	}
 
-	link_to_c_list(lst, nd, lst->head);
+	c_list_link(lst, nd, lst->head);
 	return nd->elem;
 }
 
@@ -214,14 +214,14 @@ void* c_list_add(c_list *lst, const void *elem, int index)
 		return NULL;
 	}
 
-	node *nd = create_node(elem, lst->elem_size);
+	c_list_node *nd = c_list_node_create(elem, lst->elem_size);
 	if (nd == NULL)
 	{
 		return NULL;
 	}
 
-	node *pos = find_node(lst, index);
-	link_to_c_list(lst, nd, pos);
+	c_list_node *pos = c_list_find_node(lst, index);
+	c_list_link(lst, nd, pos);
 	return nd->elem;
 }
 
@@ -263,7 +263,7 @@ int c_list_remove_first(c_list *lst)
 		return 0;
 	}
 
-	unlink_from_c_list(lst, lst->head->next);
+	c_list_unlink(lst, lst->head->next);
 	return 1;
 }
 
@@ -274,7 +274,7 @@ int c_list_remove_last(c_list *lst)
 		return 0;
 	}
 
-	unlink_from_c_list(lst, lst->head->prev);
+	c_list_unlink(lst, lst->head->prev);
 	return 1;
 }
 
@@ -285,13 +285,12 @@ int c_list_remove_elem(c_list *lst, const void *elem)
 		return 0;
 	}
 
-	node *nd = lst->head->next;
-	node *next = NULL;
+	c_list_node *nd = lst->head->next;
 	while (nd != lst->head)
 	{
 		if (lst->comparator(nd->elem, elem) == 0)
 		{
-			unlink_from_c_list(lst, nd);
+			c_list_unlink(lst, nd);
 			return 1;
 		}
 		nd = nd->next;
@@ -306,8 +305,8 @@ int c_list_remove(c_list *lst, int index)
 		return 0;
 	}
 
-	node *nd = find_node(lst, index);
-	unlink_from_c_list(lst, nd);
+	c_list_node *nd = c_list_find_node(lst, index);
+	c_list_unlink(lst, nd);
 	return 1;
 }
 
@@ -338,7 +337,7 @@ void* c_list_get(const c_list *lst, int index)
 		return NULL;
 	}
 
-	node *nd = find_node(lst, index);
+	c_list_node *nd = c_list_find_node(lst, index);
 	return (void*)nd->elem;
 }
 
@@ -384,7 +383,7 @@ void c_list_set(c_list *lst, const void *elem, int index)
 		return;
 	}
 
-	node *nd = find_node(lst, index);
+	c_list_node *nd = c_list_find_node(lst, index);
 	if (nd == lst->head)
 	{
 		return;
@@ -407,7 +406,7 @@ void c_list_foreach(c_list *lst, visit_func vistor, void *extra_data)
 		return;
 	}
 
-	node *nd = lst->head->next;
+	c_list_node *nd = lst->head->next;
 	while (nd != lst->head)
 	{
 		if (vistor((void*)nd->elem, extra_data))
@@ -425,7 +424,7 @@ int c_list_find(const c_list *lst, const void *elem, c_list_iter *it)
 		return 0;
 	}
 
-	node *nd = lst->head->next;
+	c_list_node *nd = lst->head->next;
 	while (nd != lst->head)
 	{
 		if (lst->comparator(nd->elem, elem) == 0)
@@ -503,8 +502,8 @@ void c_list_iter_remove(c_list_iter *it)
 		return;
 	}
 
-	node *nd = it->cur_node->prev;
-	unlink_from_c_list(it->lst, it->cur_node);
+	c_list_node *nd = it->cur_node->prev;
+	c_list_unlink(it->lst, it->cur_node);
 	it->cur_node = nd;
 }
 
@@ -515,12 +514,12 @@ void c_list_iter_add(c_list_iter *it, const void *elem)
 		return;
 	}
 
-	node *nd = create_node(elem, it->lst->elem_size);
+	c_list_node *nd = c_list_node_create(elem, it->lst->elem_size);
 	if (nd == NULL)
 	{
 		return;
 	}
 
-	link_to_c_list(it->lst, nd, it->cur_node);
+	c_list_link(it->lst, nd, it->cur_node);
 	it->cur_node = nd;
 }

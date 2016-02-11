@@ -12,7 +12,7 @@ struct c_array
 	int capacity;
 };
 
-static int reserve(c_array *a, int capacity)
+static int c_array_reserve(c_array *a, int capacity)
 {
 	if (a == NULL || capacity <= a->size)
 	{
@@ -37,13 +37,8 @@ static int reserve(c_array *a, int capacity)
 	return 1;
 }
 
-static void left_move(c_array *a, int start)
+static void c_array_left_move(c_array *a, int start)
 {
-	/*
-	const char *src = a->elems + start * a->elem_size;
-	char *dst = a->elems + (start - 1) * a->elem_size;
-	memcpy(dst, src, (a->size - start) * a->elem_size);
-	*/
 	const char *src = a->elems + start * a->elem_size;
 	char *dst = a->elems + (start - 1) * a->elem_size;
 	const char *end = a->elems + (a->size - 1) * a->elem_size;
@@ -55,13 +50,8 @@ static void left_move(c_array *a, int start)
 	}
 }
 
-static void right_move(c_array *a, int start)
+static void c_array_right_move(c_array *a, int start)
 {
-	/*
-	const char *src = a->elems + start * a->elem_size;
-	char *dst = a->elems + (start + 1) * a->elem_size;
-	memcpy(dst, src, (a->size - start) * a->elem_size);
-	*/
 	const char *src = a->elems + (a->size - 1) * a->elem_size;
 	char *dst = a->elems + a->size * a->elem_size;
 	const char *end = a->elems + start * a->elem_size;
@@ -167,13 +157,13 @@ void* c_array_add(c_array *a, const void *elem, int index)
 	if (a->size == a->capacity)
 	{
 		int new_capacity = 1 + a->capacity + (a->capacity >> 1);
-		if (!reserve(a, new_capacity))
+		if (!c_array_reserve(a, new_capacity))
 		{
 			return NULL;
 		}
 	}
 
-	right_move(a, index);
+	c_array_right_move(a, index);
 	char *dst = a->elems + a->elem_size * index;
 	if (elem != C_ELEM_ZERO)
 	{
@@ -198,7 +188,7 @@ int c_array_add_all(c_array *dst, const c_array *src)
 	if (dst->capacity < total_size)
 	{
 		total_size += total_size >> 1;
-		if (!reserve(dst, total_size))
+		if (!c_array_reserve(dst, total_size))
 		{
 			return 0;
 		}
@@ -226,7 +216,7 @@ int c_array_remove(c_array *a, int index)
 		return 0;
 	}
 
-	left_move(a, index + 1);
+	c_array_left_move(a, index + 1);
 	--a->size;
 	return 1;
 }

@@ -18,7 +18,7 @@ struct c_priority_queue
 	compare_func comparator;
 };
 
-static int reserve(c_priority_queue *pri_queue)
+static int c_priority_queue_reserve(c_priority_queue *pri_queue)
 {
 	int new_capacity = pri_queue->capacity + (pri_queue->capacity >> 1);
 
@@ -37,7 +37,7 @@ static int reserve(c_priority_queue *pri_queue)
 	return 1;
 }
 
-static c_priority_queue* create_c_priority_queue(size_t elem_size, compare_func comparator, int capacity)
+static c_priority_queue* c_priority_queue_create_capacity(size_t elem_size, compare_func comparator, int capacity)
 {
 	if (comparator == NULL || elem_size == 0 || capacity <= 0)
 	{
@@ -67,7 +67,7 @@ static c_priority_queue* create_c_priority_queue(size_t elem_size, compare_func 
 
 c_priority_queue* c_priority_queue_create(size_t elem_size, compare_func comparator)
 {
-	return create_c_priority_queue(elem_size, comparator, MIN_PRI_QUEUE_SIZE);
+	return c_priority_queue_create_capacity(elem_size, comparator, MIN_PRI_QUEUE_SIZE);
 }
 
 c_priority_queue* c_priority_queue_clone(const c_priority_queue *src)
@@ -77,7 +77,7 @@ c_priority_queue* c_priority_queue_clone(const c_priority_queue *src)
 		return NULL;
 	}
 
-	c_priority_queue *dst = create_c_priority_queue(src->elem_size, src->comparator, src->capacity);
+	c_priority_queue *dst = c_priority_queue_create_capacity(src->elem_size, src->comparator, src->capacity);
 	if (dst == NULL)
 	{
 		return NULL;
@@ -130,7 +130,7 @@ const void* c_priority_queue_push(c_priority_queue *pri_queue, const void *elem)
 
 	if (pri_queue->size >= pri_queue->capacity)
 	{
-		if (!reserve(pri_queue))
+		if (!c_priority_queue_reserve(pri_queue))
 		{
 			return NULL;
 		}

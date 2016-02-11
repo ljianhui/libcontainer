@@ -3,7 +3,7 @@
 #include "c_deque.h"
 #include "c_list.h"
 
-#define CQ_CAPACITY 2
+#define CQ_CAPACITY 128
 
 struct circle_queue // fix circle queue
 {
@@ -20,7 +20,7 @@ struct c_deque
 {
 	int elem_size;
 	int size;
-	c_list *cq_list; // single circle list of circle queue
+	c_list *cq_list;
 };
 
 

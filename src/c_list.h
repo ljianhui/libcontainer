@@ -6,7 +6,7 @@
 struct c_list_iter
 {
 	struct c_list *lst;
-	struct node *cur_node;
+	struct c_list_node *cur_node;
 };
 typedef struct c_list_iter c_list_iter;
 
