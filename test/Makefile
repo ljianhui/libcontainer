@@ -1,7 +1,7 @@
 CC := gcc
 INCS := -I ../src
 LIBS := -L../lib -lcontainer
-CFLAG := -g -Wall
+CFLAG := -g -Wall -O
 
 SRCS := ${wildcard *.c}
 DEPS := $(SRCS:.c=.d)
