@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include "c_list.h"
 
+void dump(void *dst, const void *src, size_t size)
+{
+	*(int*)dst = *(int*)src;
+}
+
+void release(void *elem)
+{
+	return;
+}
+
 int comparator(const void *x, const void *y)
 {
 	return *(int*)x - *(int*)y;
@@ -15,7 +25,7 @@ int visitor(void *element, void *extra)
 int main()
 {
 	int i = 0;
-	c_list *lst = c_list_create(sizeof(int), comparator);
+	c_list *lst = c_list_create(dump, release,  comparator, sizeof(int));
 	if (lst == NULL)
 	{
 		fprintf(stderr, "create c_list failed\n");
@@ -76,7 +86,8 @@ int main()
 	printf("size: %d\n", c_list_size(lst));
 
 	i = 9;
-	if (c_list_find(lst, &i, &it)) // 9
+	c_list_find(lst, &i, &it);
+	if (c_list_iter_elem(&it)) // 9
 	{
 		printf("find success: %d\n", *(int*)c_list_iter_elem(&it));
 	}
@@ -85,7 +96,8 @@ int main()
 		printf("find failed\n");
 	}
 	i = 111;
-	if (c_list_find(lst, &i, &it)) // 10
+	c_list_find(lst, &i, &it);
+	if (c_list_iter_elem(&it)) // 10
 	{
 		printf("find success: %d\n", *(int*)c_list_iter_elem(&it));
 	}

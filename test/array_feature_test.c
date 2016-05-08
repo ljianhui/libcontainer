@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include "c_array.h"
 
+void dump(void *dst, const void *src, size_t size)
+{
+	*(int*)dst = *(int*)src;
+}
+
+void release(void *elem)
+{
+	return;
+}
+
 int comparator(const void *x, const void *y)
 {
 	return *(int*)x - *(int*)y;
@@ -14,7 +24,7 @@ int visitor(void *element, void *extra)
 
 int main()
 {
-	c_array *a = c_array_create(sizeof(int), comparator);
+	c_array *a = c_array_create(dump, release, comparator, sizeof(int));
 	if (a == NULL)
 	{
 		fprintf(stderr, "create_array failed\n");

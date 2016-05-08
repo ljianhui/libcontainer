@@ -15,20 +15,18 @@ typedef struct c_array c_array;
 /**
  * Create a array
  * @param elem_size the size of element in the array
- * @param comparator the function pointer of int (*)(const void*, const void*)
  * @return array pointer, or NULL when error
  */
-c_array* c_array_create(size_t elem_size, compare_func comparator);
+c_array* c_array_create(dump_func dump, release_func release, compare_func compare, size_t elem_size);
 
 /**
  * Create a array with initial capacity, but size is zero
  * @param elem_size the size of element in the array
  * @param capacity the initial capacity of array
- * @param comparator the function pointer of int (*)(const void*, const void*)
  * @return array pointer, or NULL when error
  */
 c_array* c_array_create_capacity(
-	size_t elem_size, int capacity, compare_func comparator);
+	dump_func dump, release_func release, compare_func compare, size_t elem_size, int capacity);
 
 /**
  * Create a depth copy of this array instance.

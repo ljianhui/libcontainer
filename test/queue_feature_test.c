@@ -1,10 +1,21 @@
 #include <stdio.h>
 #include "c_queue.h"
 
+void dump(void *dst, const void *src, size_t size)
+{
+	*(int*)dst = *(int*)src;
+}
+
+void release(void *elem)
+{
+	return;
+}
+
+
 int main()
 {
 	int i = 0;
-	c_queue *que = c_queue_create(sizeof(int));
+	c_queue *que = c_queue_create(dump, release, sizeof(int));
 	for (i = 0; i < 10; ++i)
 	{
 		c_queue_push(que, &i);

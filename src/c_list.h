@@ -15,10 +15,9 @@ typedef struct c_list c_list;
 /**
  * Create a list
  * @param elem_size the size of element in the list
- * @param comparator the function pointer of int (*)(const void*, const void*)
  * @return list pointer, or NULL when error
  */
-c_list* c_list_create(size_t elem_size, compare_func comparator);
+c_list* c_list_create(dump_func dump, release_func release, compare_func compare, size_t elem_size);
 
 /**
  * Create a depth copy of this list instance.
@@ -99,7 +98,7 @@ void c_list_set(c_list *lst, const void *elem, int index);
  * @param extra_data save the result of visiting each elements
  */
 void c_list_foreach(c_list *lst, visit_func vistor, void *extra_data);
-int c_list_find(const c_list *lst, const void *elem, c_list_iter *it);
+void c_list_find(const c_list *lst, const void *elem, c_list_iter *it);
 
 int c_list_size(const c_list *lst);
 int c_list_is_empty(const c_list *lst);

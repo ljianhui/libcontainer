@@ -5,7 +5,7 @@
 
 typedef struct c_deque c_queue;
 
-c_queue* c_queue_create(size_t elem_size);
+c_queue* c_queue_create(dump_func dump, release_func release, size_t elem_size);
 c_queue* c_queue_clone(const c_queue *q);
 void c_queue_destroy(c_queue *q);
 

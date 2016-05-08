@@ -3,6 +3,16 @@
 #include <time.h>
 #include "c_priority_queue.h"
 
+void dump(void *dst, const void *src, size_t size)
+{
+	*(int*)dst = *(int*)src;
+}
+
+void release(void *elem)
+{
+	return;
+}
+
 int comparator(const void *x, const void *y)
 {
 	return *(int*)x - *(int*)y;
@@ -10,7 +20,7 @@ int comparator(const void *x, const void *y)
 
 int main()
 {
-	c_priority_queue *queue = c_priority_queue_create(sizeof(int), comparator);
+	c_priority_queue *queue = c_priority_queue_create(dump, release, comparator, sizeof(int));
 	if (queue == NULL)
 	{
 		printf("create priority queue failed\n");

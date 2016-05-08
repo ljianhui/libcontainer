@@ -1,9 +1,9 @@
 #include "c_stack.h"
 #include "c_deque.h"
 
-c_stack* c_stack_create(size_t elem_size)
+c_stack* c_stack_create(dump_func dump, release_func release, size_t elem_size)
 {
-	return c_deque_create(elem_size);
+	return c_deque_create(dump, release, elem_size);
 }
 
 c_stack* c_stack_clone(const c_stack *src)

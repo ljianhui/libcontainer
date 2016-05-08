@@ -1,9 +1,9 @@
 #include "c_queue.h"
 #include "c_deque.h"
 
-c_queue* c_queue_create(size_t elem_size)
+c_queue* c_queue_create(dump_func dump, release_func release, size_t elem_size)
 {
-	return c_deque_create(elem_size);
+	return c_deque_create(dump, release, elem_size);
 }
 
 c_queue* c_queue_clone(const c_queue *src)

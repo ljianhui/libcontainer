@@ -1,10 +1,21 @@
 #include <stdio.h>
 #include "c_stack.h"
 
+void dump(void *dst, const void *src, size_t size)
+{
+	*(int*)dst = *(int*)src;
+}
+
+void release(void *elem)
+{
+	return;
+}
+
+
 int main()
 {
 	int i = 0;
-	c_stack *stk = c_stack_create(sizeof(int));
+	c_stack *stk = c_stack_create(dump, release, sizeof(int));
 	for (i = 0; i < 10; ++i)
 	{
 		c_stack_push(stk, &i);

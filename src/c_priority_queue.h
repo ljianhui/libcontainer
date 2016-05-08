@@ -5,7 +5,7 @@
 
 typedef struct c_priority_queue c_priority_queue;
 
-c_priority_queue* c_priority_queue_create(size_t elem_size, compare_func comparator);
+c_priority_queue* c_priority_queue_create(dump_func dump, release_func, compare_func compare, size_t elem_size);
 c_priority_queue* c_priority_queue_clone(const c_priority_queue *src);
 void c_priority_queue_destroy(c_priority_queue *pri_queue);
 

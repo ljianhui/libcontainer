@@ -5,7 +5,7 @@
 
 typedef struct c_deque c_stack;
 
-c_stack* c_stack_create(size_t elem_size);
+c_stack* c_stack_create(dump_func dump, release_func release, size_t elem_size);
 c_stack* c_stack_clone(const c_stack *src);
 void c_stack_destroy(c_stack *s);
 

@@ -6,10 +6,10 @@
 struct c_array
 {
 	char *elems;
-	compare_func comparator;
 	size_t elem_size;
 	int size;
 	int capacity;
+	c_elem_opt opt;
 };
 
 static int c_array_reserve(c_array *a, int capacity)
@@ -39,6 +39,7 @@ static int c_array_reserve(c_array *a, int capacity)
 
 static void c_array_left_move(c_array *a, int start)
 {
+	a->opt.release(a->elems + a->elem_size * (start - 1));
 	const char *src = a->elems + start * a->elem_size;
 	char *dst = a->elems + (start - 1) * a->elem_size;
 	const char *end = a->elems + (a->size - 1) * a->elem_size;
@@ -63,14 +64,19 @@ static void c_array_right_move(c_array *a, int start)
 	}
 }
 
-c_array* c_array_create(size_t elem_size, compare_func comparator)
+c_array* c_array_create(dump_func dump, release_func release, compare_func compare, size_t elem_size)
 {
-	return c_array_create_capacity(elem_size, 0, comparator);
+	return c_array_create_capacity(dump, release, compare, elem_size, 0);
 }
 
 c_array* c_array_create_capacity(
-	size_t elem_size, int capacity, compare_func comparator)
+	dump_func dump, release_func release, compare_func compare, size_t elem_size, int capacity)
 {
+	if (dump == NULL || release == NULL || compare == NULL || elem_size == 0 || capacity < 0)
+	{
+		return NULL;
+	}
+
 	c_array *a = (c_array*)malloc(sizeof(c_array));
 	if (a == NULL)
 	{
@@ -78,10 +84,12 @@ c_array* c_array_create_capacity(
 	}
 
 	a->elems = NULL;
-	a->comparator = comparator;
 	a->elem_size = elem_size;
 	a->size = 0;
 	a->capacity = capacity;
+	a->opt.dump = dump;
+	a->opt.release = release;
+	a->opt.compare = compare;
 
 	int total_bytes = elem_size * capacity;
 	if (total_bytes >= 0)
@@ -103,14 +111,18 @@ c_array* c_array_clone(const c_array *src)
 		return NULL;
 	}
 
-	c_array *a = c_array_create_capacity(
-		src->elem_size, src->capacity, src->comparator);
+	c_array *a = c_array_create_capacity(src->opt.dump, src->opt.release, src->opt.compare, 
+		src->elem_size, src->capacity);
 	if (a == NULL)
 	{
 		return NULL;
 	}
 
-	memcpy(a->elems, src->elems, src->elem_size * src->size);
+	int i = 0;
+	for (i = 0; i < src->size; ++i)
+	{
+		a->opt.dump(a->elems + a->elem_size * i, src->elems + src->elem_size * i, a->elem_size);
+	}
 	a->size = src->size;
 	return a;
 }
@@ -119,6 +131,11 @@ void c_array_clear(c_array *a)
 {
 	if (a)
 	{
+		int i = 0;
+		for (i = 0; i < a->size; ++i)
+		{
+			a->opt.release((void*)(a->elems + i * a->elem_size));
+		}
 		a->size = 0;
 	}
 }
@@ -129,6 +146,8 @@ void c_array_destroy(c_array *a)
 	{
 		return;
 	}
+
+	c_array_clear(a);
 
 	if (a->elems)
 	{
@@ -149,7 +168,7 @@ int c_array_remove_last(c_array *a)
 
 void* c_array_add(c_array *a, const void *elem, int index)
 {
-	if (a == NULL || elem == NULL || index < 0 || index > a->size)
+	if (a == NULL || index < 0 || index > a->size)
 	{
 		return NULL;
 	}
@@ -165,14 +184,7 @@ void* c_array_add(c_array *a, const void *elem, int index)
 
 	c_array_right_move(a, index);
 	char *dst = a->elems + a->elem_size * index;
-	if (elem != C_ELEM_ZERO)
-	{
-		memcpy(dst, elem, a->elem_size);	
-	}
-	else
-	{
-		memset(dst, 0, a->elem_size);
-	}
+	a->opt.dump(dst, elem, a->elem_size);
 	++a->size;
 	return dst;
 }
@@ -194,8 +206,12 @@ int c_array_add_all(c_array *dst, const c_array *src)
 		}
 	}
 	
-	memcpy(dst->elems + dst->elem_size * dst->size,
-		src->elems, src->elem_size * src->size);
+	int i = 0;
+	for (i = 0; i < src->size; ++i)
+	{
+		dst->opt.dump(dst->elems + (dst->size + i) * dst->elem_size, 
+			src->elems + i * src->elem_size, dst->elem_size);
+	}
 	dst->size += src->size;
 	return 1;
 }
@@ -232,27 +248,20 @@ void* c_array_get(const c_array *a, int index)
 
 int c_array_set(c_array *a, const void *elem, int index)
 {
-	if (a == NULL || elem == NULL ||
-		index < 0 || index >= a->size)
+	if (a == NULL || index < 0 || index >= a->size)
 	{
 		return 0;
 	}
-	
-	if (elem != C_ELEM_ZERO)
-	{
-		memcpy(a->elems + a->elem_size * index, elem, a->elem_size);
-	}
-	else
-	{
-		memset(a->elems + a->elem_size * index, 0, a->elem_size);
-	}
+
+	a->opt.release(a->elems + a->elem_size * index);
+	a->opt.dump(a->elems + a->elem_size * index, elem, a->elem_size);
 	
 	return 1;
 }
 
 int c_array_index_of(const c_array *a, const void *elem)
 {
-	if (a == NULL || elem == NULL || a->comparator == NULL)
+	if (a == NULL)
 	{
 		return -1;
 	}
@@ -261,7 +270,7 @@ int c_array_index_of(const c_array *a, const void *elem)
 	char *cur_elem = a->elems;
 	for (i = 0; i < a->size; ++i)
 	{
-		if (a->comparator((const void*)cur_elem, elem) == 0)
+		if (a->opt.compare((const void*)cur_elem, elem) == 0)
 		{
 			return i;
 		}

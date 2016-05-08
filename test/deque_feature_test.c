@@ -1,9 +1,19 @@
 #include <stdio.h>
 #include "c_deque.h"
 
+void dump(void *dst, const void *src, size_t size)
+{
+	*(int*)dst = *(int*)src;
+}
+
+void release(void *elem)
+{
+	return;
+}
+
 int main()
 {
-	c_deque *deq = c_deque_create(sizeof(int));
+	c_deque *deq = c_deque_create(dump, release, sizeof(int));
 	c_deque *clone = NULL;
 
 	int i = 0;
